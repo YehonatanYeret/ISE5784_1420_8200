@@ -30,25 +30,27 @@ public class Vector extends Point {
     }
 
     /**
-     * Copy constructor for a vector
-     * @param v vector to copy
+     * add a vector to a vector
+     * @param v vector to add
+     * @return new vector that is the sum of the two vectors
      */
     public Vector add(Vector v) {
         return new Vector(this.xyz.add(v.xyz));
     }
 
     /**
-     * Subtract a vector from a vector
-     * @param v vector to subtract
-     * @return new vector
+     * Multiply a vector by a scalar
+     * @param scalar scalar to multiply
+     * @return new vector scaled by scalar
      */
     public Vector scale(double scalar) {
         return new Vector(this.xyz.scale(scalar));
     }
 
     /**
-     * Calculate the squared length of a vector
-     * @return squared length
+     * dot product of two vectors
+     * @param v vector to dot
+     * @return dot product of the two vectors
      */
     public double dotProduct(Vector v) {
         return this.xyz.d1 * v.xyz.d1 + this.xyz.d2 * v.xyz.d2 + this.xyz.d3 * v.xyz.d3;
@@ -57,7 +59,7 @@ public class Vector extends Point {
     /**
      * Calculate the cross product of two vectors
      * @param v vector to cross
-     * @return new vector
+     * @return new vector that is the cross product of the two vectors
      */
     public Vector cross(Vector v) {
         return new Vector(this.xyz.d2 * v.xyz.d3 - this.xyz.d3 * v.xyz.d2,
@@ -83,7 +85,7 @@ public class Vector extends Point {
 
     /**
      * Normalize a vector
-     * @return new vector
+     * @return new vector that is the normalized vector
      */
     public Vector normalize() {
         return new Vector(this.xyz.reduce(this.length()));

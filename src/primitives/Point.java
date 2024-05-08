@@ -33,8 +33,9 @@ public class Point {
     }
 
     /**
-     * Copy constructor for a point
+     * Subtract a point from a point
      * @param p1 point to copy
+     * @return new vector
      */
     public Vector subtract(Point p1){
         return new Vector(this.xyz.subtract(p1.xyz));
