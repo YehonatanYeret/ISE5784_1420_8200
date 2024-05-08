@@ -11,6 +11,6 @@ class CylinderTests {
      * Test method for {@link geometries.Cylinder#getNormal(primitives.Point)}.
      */
     @Test
-    void getNormal() {
+    void getNormalTest() {
     }
 }

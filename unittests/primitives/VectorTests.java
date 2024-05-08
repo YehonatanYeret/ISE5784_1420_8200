@@ -11,42 +11,42 @@ class VectorTests {
      * Test method for {@link primitives.Vector#add(primitives.Vector)}.
      */
     @Test
-    void add() {
+    void addTest() {
     }
 
     /**
      * Test method for {@link primitives.Vector#scale(double)})}.
      */
     @Test
-    void scale() {
+    void scaleTest() {
     }
 
     /**
      * Test method for {@link primitives.Vector#dotProduct(Vector)}.
      */
     @Test
-    void dotProduct() {
+    void dotProductTest() {
     }
 
     /**
      * Test method for {@link primitives.Vector#crossProduct(Vector)}.
      */
     @Test
-    void crossProduct() {
+    void crossProductTest() {
     }
 
     /**
      * Test method for {@link primitives.Vector#lengthSquared()}.
      */
     @Test
-    void lengthSquared() {
+    void lengthSquaredTest() {
     }
 
     /**
      * Test method for {@link primitives.Vector#length()}.
      */
     @Test
-    void length() {
+    void lengthTest() {
     }
 
     /**
