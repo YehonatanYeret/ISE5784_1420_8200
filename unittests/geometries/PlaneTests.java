@@ -21,8 +21,12 @@ class PlaneTests {
         assertDoesNotThrow(() -> new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1)), "Failed to create a proper plane");
 
         // =============== Boundary Values Tests =================
-        // TC02: Test for a plane with the same point
-        assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(1, 0, 0), new Point(1, 0, 0), new Point(1, 0, 0)), "Failed to throw an exception when creating a plane with the same point");
+        // TC02: Test for a plane that the points are on the same line
+        assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(1, 0, 0), new Point(2, 0, 0), new Point(3, 0, 0)), "Failed to throw an exception when creating a plane with points on the same line");
+
+        // TC03: Test for a plane that the points are converge
+        assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(0, 0 ,0), new Point(1, 1, 0), new Point(1, 1, 1)), "Failed to throw an exception when creating a plane with points that converge");
+
     }
 
     /**
