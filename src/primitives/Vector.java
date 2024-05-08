@@ -57,11 +57,11 @@ public class Vector extends Point {
     }
 
     /**
-     * Calculate the cross product of two vectors
-     * @param v vector to cross
-     * @return new vector that is the cross product of the two vectors
+     * Calculate the crossProduct product of two vectors
+     * @param v vector to crossProduct
+     * @return new vector that is the crossProduct product of the two vectors
      */
-    public Vector cross(Vector v) {
+    public Vector crossProduct(Vector v) {
         return new Vector(this.xyz.d2 * v.xyz.d3 - this.xyz.d3 * v.xyz.d2,
                 this.xyz.d3 * v.xyz.d1 - this.xyz.d1 * v.xyz.d3,
                 this.xyz.d1 * v.xyz.d2 - this.xyz.d2 * v.xyz.d1);

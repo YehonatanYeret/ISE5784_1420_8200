@@ -22,7 +22,7 @@ public class Plane implements Geometry{
         this.q = p1;
         this.normal = null;
 //        this.normal = p2.subtract(p1)
-//                .cross(p3.subtract(p1))
+//                .crossProduct(p3.subtract(p1))
 //                .normalize();
     }
 
@@ -41,6 +41,10 @@ public class Plane implements Geometry{
         return normal;
     }
 
+    /**
+     * Getter for the normal of the plane, as we asked
+     * @return the normal vector of the plane
+     */
     public Vector getNormal() {
         return normal;
     }
