@@ -13,9 +13,8 @@ public class Ray {
      * @param direction direction vector
      */
     public Ray(Point head, Vector direction) {
-        //can be problematic if the param can be changed from outside
         this.head = head;
-        this.direction = direction;
+        this.direction = direction.normalize();
     }
 
     @Override

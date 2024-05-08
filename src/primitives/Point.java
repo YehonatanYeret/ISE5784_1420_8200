@@ -29,7 +29,7 @@ public class Point {
      * @param xyz coordinates
      */
     public Point(Double3 xyz) {
-        this(xyz.d1, xyz.d2, xyz.d3);
+        this.xyz = xyz;
     }
 
     /**
