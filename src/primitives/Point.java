@@ -1,5 +1,7 @@
 package primitives;
 
+import org.junit.jupiter.api.function.Executable;
+
 /**
  * Class Point is the basic class representing a point in the 3D space
  * @author Maor
@@ -35,6 +37,7 @@ public class Point {
 
     /**
      * Subtract a point from a point
+     *
      * @param p1 point to copy
      * @return new vector
      */
