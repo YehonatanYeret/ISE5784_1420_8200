@@ -13,41 +13,41 @@ class PointTests {
      * Test method for {@link primitives.Point#subtract(Point)}.
      */
     @Test
-    void subtractTest() {
+    void testSubtract() {
     }
 
     /**
      * Test method for {@link primitives.Point#add(Vector)}.
      */
     @Test
-    void addTest() {
+    void testAdd() {
     }
 
     /**
      * Test method for {@link primitives.Point#distanceSquared(Point)}.
      */
     @Test
-    void distanceSquaredTest() {
+    void testDistanceSquared() {
     }
 
     /**
      * Test method for {@link primitives.Point#distance(Point)}.
      */
     @Test
-    void distanceTest() {
+    void testDistance() {
     }
 
     /**
      * Test method for {@link primitives.Point#equals(Object)}.
      */
     @Test
-    void testEqualsTest() {
+    void testEquals() {
     }
 
     /**
      * Test method for {@link primitives.Point#toString()}.
      */
     @Test
-    void testToStringTest() {
+    void testToString() {
     }
 }

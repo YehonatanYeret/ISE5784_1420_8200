@@ -13,6 +13,6 @@ class SphereTests {
      * Test method for {@link geometries.Sphere#getNormal(primitives.Point)}.
      */
     @Test
-    void getNormalTest() {
+    void testGetNormal() {
     }
 }

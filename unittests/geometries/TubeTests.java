@@ -13,6 +13,6 @@ class TubeTests {
      * Test method for {@link geometries.Tube#getNormal(primitives.Point)}.
      */
     @Test
-    void getNormalTest() {
+    void testGetNormal() {
     }
 }

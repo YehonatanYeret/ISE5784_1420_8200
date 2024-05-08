@@ -13,13 +13,6 @@ class PlaneTests {
      * Test method for {@link geometries.Plane#getNormal(primitives.Point)}.
      */
     @Test
-    void getNormalTest() {
-    }
-
-    /**
-     * Test method for {@link geometries.Plane#getNormal(primitives.Point)}.
-     */
-    @Test
-    void testGetNormalTest() {
+    void testGetNormal() {
     }
 }
