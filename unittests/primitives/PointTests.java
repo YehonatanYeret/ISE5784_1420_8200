@@ -36,18 +36,4 @@ class PointTests {
     @Test
     void testDistance() {
     }
-
-    /**
-     * Test method for {@link primitives.Point#equals(Object)}.
-     */
-    @Test
-    void testEquals() {
-    }
-
-    /**
-     * Test method for {@link primitives.Point#toString()}.
-     */
-    @Test
-    void testToString() {
-    }
 }
