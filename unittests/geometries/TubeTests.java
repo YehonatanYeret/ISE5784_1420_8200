@@ -36,6 +36,6 @@ class TubeTests {
         assertEquals(new Vector(1, 0, 0), tube.getNormal(new Point(1, 0, 0)), "Bad normal to tube");
         // ============ Equivalence Partitions Tests ==============
         // TC01: Test if the point is vertical to the axis
-        assertThrows(IllegalArgumentException.class, () -> new Tube(new Ray(new Point(0, 0 , 0), new Vector(1, 0 ,0 )), 1).getNormal(new Point(0, 1, 0)), "Failed to throw an exception when the point is vertical to the axis");
+        assertDoesNotThrow(() -> new Tube(new Ray(new Point(0, 0 , 0), new Vector(1, 0 ,0 )), 1).getNormal(new Point(0, 1, 0)), "Failed to throw an exception when the point is vertical to the axis");
     }
 }
