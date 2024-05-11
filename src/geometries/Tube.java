@@ -25,6 +25,13 @@ public class Tube extends RadialGeometry {
 
     @Override
     public Vector getNormal(Point point) {
-        return null;
-    }
+        //calculate the projection of the point on the axis
+        double t = this.axis.getDirection().dotProduct(point.subtract(this.axis.getHead()));
+        if(t == 0)//if the vector is orthogonal to the axis
+            return point.subtract(this.axis.getHead()).normalize();
+        //find center of the tube
+        Point o = this.axis.getHead().add(this.axis.getDirection().scale(t));
+        //return the normalized vector from the center of the tube to the point
+        return point.subtract(o).normalize();
+        }
 }

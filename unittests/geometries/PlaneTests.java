@@ -36,7 +36,7 @@ class PlaneTests {
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Test for a proper result
-        Vector normal = new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1)).getNormal();
+        Vector normal = new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(1, 1, 0)).getNormal();
         assertTrue(normal.equals(new Vector(0, 0, 1)) || normal.equals(new Vector(0, 0, -1)), "Failed to get the normal vector of the plane");;
     }
 }

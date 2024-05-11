@@ -25,6 +25,21 @@ public class Ray {
                 && direction.equals(other.direction);
     }
 
+    /**
+     * Getter for the direction of the ray
+     * @return the direction vector of the ray
+     */
+    public Vector getDirection() {//may be deleted because the instruction
+        return direction;
+    }
+
+    /**
+     * Getter for the head of the ray
+     * @return the head point of the ray
+     */
+    public Point getHead() {//may be deleted because the instruction
+        return head;
+    }
 
     @Override
     public String toString() {
