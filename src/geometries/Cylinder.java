@@ -22,6 +22,22 @@ public class Cylinder extends Tube{
 
     @Override
     public Vector getNormal(Point point) {
-        return null;
+        // If p0 is the head of the axis
+        if (point.equals(axis.getHead()))
+            return axis.getDirection().scale(-1);
+
+        // If p1 is the end of the axis
+        if (point.equals(axis.getHead().add(axis.getDirection().scale(height))))
+            return axis.getDirection();
+
+        // If the point is on the top or bottom surface of the cylinder
+        if (axis.getHead().subtract(point).dotProduct(axis.getDirection()) == 0)
+            return axis.getDirection().scale(-1);
+
+        if (axis.getHead().add(axis.getDirection().scale(height)).subtract(point).dotProduct(axis.getDirection()) == 0)
+            return axis.getDirection();
+
+        // Otherwise, call the superclass method
+        return super.getNormal(point);
     }
 }
