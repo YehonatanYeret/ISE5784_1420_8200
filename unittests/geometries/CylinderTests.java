@@ -64,6 +64,7 @@ class CylinderTests {
         assertEquals(new Vector(0, 0, 1),
                 cylinder.getNormal(new Point(0, 0, 1)),
                 "Bad normal to cylinder");
+
     }
 
     @Test
