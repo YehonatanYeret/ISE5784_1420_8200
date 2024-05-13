@@ -1,10 +1,13 @@
 package geometries;
 
+import primitives.Point;
+import primitives.Ray;
+
 /**
  * Abstract class RadialGeometry is the basic class representing a radial geometry in the 3D space
  */
 public abstract class RadialGeometry implements Geometry {
-    protected double radius;
+    protected final double radius;
 
     /**
      * Constructor to initialize the radius of the geometry
@@ -16,6 +19,4 @@ public abstract class RadialGeometry implements Geometry {
             throw new IllegalArgumentException("radius must be positive");
         this.radius = radius;
     }
-
-
 }

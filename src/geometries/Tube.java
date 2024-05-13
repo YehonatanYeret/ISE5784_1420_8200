@@ -4,6 +4,8 @@ import primitives.Ray;
 import primitives.Point;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Class Tube is the basic class representing a tube in the 3D space.
  */
@@ -34,4 +36,9 @@ public class Tube extends RadialGeometry {
         //return the normalized vector from the center of the tube to the point
         return point.subtract(o).normalize();
         }
+
+    @Override
+    public List<Point> findIntsersections(Ray ray) {
+        return null;
+    }
 }

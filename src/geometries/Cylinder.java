@@ -3,6 +3,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Class Cylinder is the basic class representing a cylinder in the 3D space.
  */
@@ -39,5 +41,11 @@ public class Cylinder extends Tube{
 
         // Otherwise, call the superclass method
         return super.getNormal(point);
+    }
+
+
+    @Override
+    public List<Point> findIntsersections(Ray ray){
+        return List.of();
     }
 }
