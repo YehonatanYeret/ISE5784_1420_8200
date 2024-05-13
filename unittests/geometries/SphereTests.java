@@ -2,6 +2,8 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.*;
+
+import java.util.Comparator;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +41,7 @@ class SphereTests {
 
         // ============ Equivalence Partitions Tests ==============
         // TC01 The ray start inside the sphere
-        assertEquals(List.of(new Point(0, 1, 1)), sphere.findIntsersections(new Ray(new Point(0, 0, 1), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start inside the sphere");
+        assertEquals(List.of(new Point(0, Math.sqrt(0.75), 1.5)), sphere.findIntsersections(new Ray(new Point(0, 0, 1.5), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start inside the sphere");
 
         // TC02 The ray never intersect the sphere
         assertNull(sphere.findIntsersections(new Ray(new Point(0, 0, 3), new Vector(1, 1, 1))), "Failed to find the intersection point when the ray never intersect the sphere");
@@ -48,7 +50,7 @@ class SphereTests {
         assertEquals(List.of(new Point(0, Math.sqrt(0.75), 1.5), new Point(0, -Math.sqrt(0.75), 1.5)), sphere.findIntsersections(new Ray(new Point(0, 2, 1.5), new Vector(0, -1, 0))), "Failed to find the intersection points when the ray start outside the sphere and intersect the sphere twice");
 
         // TC04 The ray start outside the sphere and the ray does not intersect the sphere
-        assertNull(sphere.findIntsersections(new Ray(new Point(0, -2, 1.5), new Vector(0, -1, 0))), "Failed to find the intersection points when the ray start outside the sphere and intersect the sphere twice");
+        assertNull(sphere.findIntsersections(new Ray(new Point(0, -2, 1.5), new Vector(0, -1, 0))), "Failed to find the intersection points when the ray start outside the sphere and not intersect the sphere");
 
         // =============== Boundary Values Tests =================
 
@@ -75,7 +77,7 @@ class SphereTests {
         //tests for rays that are not orthogonal nor tangential to the sphere(not reach middle of the sphere):
 
         // TC10 The ray start on the sphere and intersect the sphere
-        assertEquals(List.of(new Point(2.0/3, 1.0/3, 1.0/3)), sphere.findIntsersections(new Ray(new Point(0, 1, 1), new Vector(-1, -1, -1))), "Failed to find the intersection point when the ray start on the sphere and intersect the sphere");
+        assertEquals(List.of(new Point(-2.0/3, 1.0/3, 1.0/3)), sphere.findIntsersections(new Ray(new Point(0, 1, 1), new Vector(-1, -1, -1))), "Failed to find the intersection point when the ray start on the sphere and intersect the sphere");
 
         // TC11 The ray start on the sphere and does not intersect the sphere
         assertNull(sphere.findIntsersections(new Ray(new Point(0, 1, 1), new Vector(1, 1, 1))), "Failed to find the intersection point when the ray start on the sphere and doesn't intersect the sphere");
@@ -86,7 +88,7 @@ class SphereTests {
         assertEquals(List.of(new Point(0, -1, 1)), sphere.findIntsersections(new Ray(new Point(0, 1, 1), new Vector(0, -1, 0))), "Failed to find the intersection point when the ray start on the sphere and reach the middle of the sphere");
 
         // TC13 The ray start before the sphere and reach the middle of the sphere
-        assertEquals(List.of(new Point(0, -1, 1), new Point(0,1,1)), sphere.findIntsersections(new Ray(new Point(0, 2, 1), new Vector(0, -1, 0))), "Failed to find the intersection point when the ray start before the sphere and reach the middle of the sphere");
+        assertEquals(List.of(new Point(0, 1, 1), new Point(0,-1,1)), sphere.findIntsersections(new Ray(new Point(0, 2, 1), new Vector(0, -1, 0))).stream().sorted(Comparator.comparingDouble(p -> p.distance(new Point(-1,0,0)))).toList(), "Failed to find the intersection point when the ray start before the sphere and reach the middle of the sphere");
 
         //TC14 The ray start in the middle of the sphere
         assertEquals(List.of(new Point(0, 1, 1)), sphere.findIntsersections(new Ray(new Point(0, 0, 1), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start in the middle of the sphere");

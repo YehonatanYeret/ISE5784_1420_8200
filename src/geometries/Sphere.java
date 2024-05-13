@@ -28,6 +28,27 @@ public class Sphere extends RadialGeometry{
 
     @Override
     public List<Point> findIntsersections(Ray ray) {
-        return List.of();
+
+        // if the ray starts at the center of the sphere
+        if (center.equals(ray.getHead()))
+            return List.of(ray.getHead().add(ray.getDirection().scale(radius)));
+
+        Vector u = (center.subtract(ray.getHead()));
+        double tm = ray.getDirection().dotProduct(u);
+        double d = Math.sqrt(u.lengthSquared() - tm * tm);
+        if (d >= radius || tm < 0)
+            return null;
+
+        double th = Math.sqrt(radius * radius - d * d);
+        double t1 = tm - th;
+        double t2 = tm + th;
+
+        if (t1 > 0 && t2 > 0)
+            return List.of(ray.getHead().add(ray.getDirection().scale(t1)), ray.getHead().add(ray.getDirection().scale(t2)));
+        if (t1 > 0)
+            return List.of(ray.getHead().add(ray.getDirection().scale(t1)));
+
+        // We know that t2 > 0
+        return List.of(ray.getHead().add(ray.getDirection().scale(t2)));
     }
 }
