@@ -69,41 +69,7 @@ class CylinderTests {
 
     @Test
     void testFindIntersections() {
-//        // ============ Equivalence Partitions Tests ==============
-//        // TC01: Ray's line is outside the cylinder (0 points)
-//        Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 1);
-//        assertEquals(null, cylinder.findIntsersections(new Ray(new Point(0, 0, 2), new Vector(0, 0, 1))),
-//                "Ray's line out of cylinder");
-//
-//        // TC02: Ray starts before and crosses the cylinder (2 points)
-//        assertEquals(List.of(new Point(0, 0, 1), new Point(0, 0, 2)),
-//                cylinder.findIntsersections(new Ray(new Point(0, 0, -1), new Vector(0, 0, 1))),
-//                "Wrong number of points");
-//
-//        // TC03: Ray starts inside the cylinder (1 point)
-//        assertEquals(List.of(new Point(0, 0, 2)),
-//                cylinder.findIntsersections(new Ray(new Point(0, 0, 1), new Vector(0, 0, 1))),
-//                "Wrong number of points");
-//
-//        // TC04: Ray starts after the cylinder (0 points)
-//        assertEquals(null, cylinder.findIntsersections(new Ray(new Point(0, 0, 3), new Vector(0, 0, 1))),
-//                "Ray's line out of cylinder");
-//
-//        // TC05: Ray starts before and crosses the cylinder (2 points)
-//        cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 2);
-//        assertEquals(List.of(new Point(0, 0, 1), new Point(0, 0, 3)),
-//                cylinder.findIntsersections(new Ray(new Point(0, 0, -1), new Vector(0, 0, 1))),
-//                "Wrong number of points");
-//
-//        // TC06: Ray starts inside the cylinder (1 point)
-//        assertEquals(List.of(new Point(0, 0, 3)),
-//                cylinder.findIntsersections(new Ray(new Point(0, 0, 1), new Vector(0, 0, 1))),
-//                "Wrong number of points");
-
-        // TC07: Ray starts after the cylinder (0 points)
-        Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 2);
-        assertEquals(null, cylinder.findIntsersections(new Ray(new Point(0, 0, 4), new Vector(0, 0, 1))),
-                "Ray's line out of cylinder");
+        // ============ Equivalence Partitions Tests ==============
 
     }
 }

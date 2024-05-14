@@ -38,6 +38,14 @@ public class Plane implements Geometry{
         this.normal = normal.normalize();
     }
 
+    /**
+     * Getter for the normal of the plane, as we asked
+     * @return the normal vector of the plane
+     */
+    public Vector getNormal() {
+        return normal;
+    }
+
     @Override
     public Vector getNormal(Point point) {
         return normal;
@@ -45,14 +53,13 @@ public class Plane implements Geometry{
 
     @Override
     public List<Point> findIntsersections(Ray ray) {
-        return List.of();
-    }
-
-    /**
-     * Getter for the normal of the plane, as we asked
-     * @return the normal vector of the plane
-     */
-    public Vector getNormal() {
-        return normal;
+        if(ray.getDirection().dotProduct(normal) == 0 || q.equals(ray.getHead())) {
+            return null;
+        }
+        double t = normal.dotProduct(q.subtract(ray.getHead())) / normal.dotProduct(ray.getDirection());
+        if (t <= 0) {
+            return null;
+        }
+        return List.of(ray.getHead().add(ray.getDirection().scale(t)));
     }
 }
