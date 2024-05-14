@@ -100,6 +100,6 @@ class SphereTests {
         assertNull(sphere.findIntsersections(new Ray(new Point(0, 2, 1), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start after the sphere and doesn't reach the middle of the sphere");
 
         //TC17 the run in the sphere and does not reach the middle of the sphere because the direction is opposite
-        assertNull(sphere.findIntsersections(new Ray(new Point(0, 0.5, 1), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start in the sphere and doesn't reach the middle of the sphere");
+        assertEquals(List.of(new Point(0,1,1)), sphere.findIntsersections(new Ray(new Point(0, 0.5, 1), new Vector(0, 1, 0))), "Failed to find the intersection point when the ray start in the sphere and doesn't reach the middle of the sphere");
     }
 }
