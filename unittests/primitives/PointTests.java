@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class PointTests {
 
+    private final double DELTA = 0.00001;
+
+/**
+     * Test method for {@link primitives.Point#Point(double, double, double)}.
+     */
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
@@ -54,11 +59,11 @@ class PointTests {
     void testDistanceSquared() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Calculate the squared distance between two points
-        assertEquals(13, new Point(1, 2, 3).distanceSquared(new Point(1, 5, 1)), "Calculate the squared distance between two points does not work correctly");
+        assertEquals(13, new Point(1, 2, 3).distanceSquared(new Point(1, 5, 1)), DELTA ,"Calculate the squared distance between two points does not work correctly");
 
         // ============ Boundary Values Tests ==================
         // TC02: Calculate the squared distance between two points
-        assertEquals(0, new Point(1, 2, 3).distanceSquared(new Point(1, 2, 3)), "Calculate the squared distance between two points does not work correctly");
+        assertEquals(0, new Point(1, 2, 3).distanceSquared(new Point(1, 2, 3)),DELTA, "Calculate the squared distance between two points does not work correctly");
     }
 
     /**
@@ -68,10 +73,10 @@ class PointTests {
     void testDistance() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Calculate the distance between two points
-        assertEquals(5, new Point(0, 4, 0).distance(new Point(0, 0, 3)), "Calculate the distance between two points does not work correctly");
+        assertEquals(5, new Point(0, 4, 0).distance(new Point(0, 0, 3)), DELTA, "Calculate the distance between two points does not work correctly");
 
         // ============ Boundary Values Tests ==================
         // TC02: Calculate the distance between two points
-        assertEquals(0, new Point(1, 2, 3).distance(new Point(1, 2, 3)), "Calculate the distance between two points does not work correctly");
+        assertEquals(0, new Point(1, 2, 3).distance(new Point(1, 2, 3)), DELTA,  "Calculate the distance between two points does not work correctly");
     }
 }

@@ -9,6 +9,7 @@ import static primitives.Util.isZero;
  * Unit tests for primitives.Vector class
  */
 class VectorTests {
+    private final double DELTA = 0.00001;
 
     /**
      * Test method for {@link primitives.Vector#Vector(double, double, double)}.
@@ -68,15 +69,15 @@ class VectorTests {
     void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(7, new Vector(1, 2, 3).dotProduct(new Vector(2, 1, 1)), "Wrong result of dot product");
+        assertEquals(7, new Vector(1, 2, 3).dotProduct(new Vector(2, 1, 1)), DELTA, "Wrong result of dot product");
 
         // =============== Boundary Values Tests ==================
 
         // TC02: one of the vectors is the singularity vector
-        assertEquals(1, new Vector(1, 2, 3).dotProduct(new Vector(1, 0, 0)), "Dot product with singularity vector");
+        assertEquals(1, new Vector(1, 2, 3).dotProduct(new Vector(1, 0, 0)), DELTA, "Dot product with singularity vector");
 
         // TC03: dot product with zero vector
-        assertEquals(0, new Vector(1, 0, 0).dotProduct(new Vector(0, 0, 1)), "Dot product with zero vector");
+        assertEquals(0, new Vector(1, 0, 0).dotProduct(new Vector(0, 0, 1)), DELTA, "Dot product with zero vector");
     }
 
     /**
@@ -115,11 +116,11 @@ class VectorTests {
     void testLengthSquared() {
         //============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(14, new Vector(1, 2, 3).lengthSquared(), "Wrong result of length squared");
+        assertEquals(14, new Vector(1, 2, 3).lengthSquared(), DELTA, "Wrong result of length squared");
 
         // =============== Boundary Values Tests ==================
         // TC02: positive and negative vector
-        assertEquals(9, new Vector(-1, 2, -2).lengthSquared(), "Wrong result of length squared");
+        assertEquals(9, new Vector(-1, 2, -2).lengthSquared(), DELTA, "Wrong result of length squared");
     }
 
     /**
@@ -129,11 +130,11 @@ class VectorTests {
     void testLength() {
         //============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(3, new Vector(-1, -2, -2).length(), "Wrong result of length");
+        assertEquals(3, new Vector(-1, -2, -2).length(), DELTA, "Wrong result of length");
 
         // =============== Boundary Values Tests ==================
         // TC02: positive and negative vector
-        assertEquals(3, new Vector(-1, 2, -2).length(), "Wrong result of length");
+        assertEquals(3, new Vector(-1, 2, -2).length(), DELTA, "Wrong result of length");
     }
 
     /**
@@ -143,7 +144,7 @@ class VectorTests {
     void testNormalize() {
         //============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(1, new Vector(2, 3, 4).normalize().length(), "Wrong result of normalization");
+        assertEquals(1, new Vector(2, 3, 4).normalize().length(), DELTA,"Wrong result of normalization");
 
      // =============== Boundary Values Tests ==================
         // TC02: zero vector

@@ -1,11 +1,12 @@
 package geometries;
 
-import java.util.List;
+import java.util.*;
 
 import static primitives.Util.isZero;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 /**
@@ -85,7 +86,38 @@ public class Polygon implements Geometry {
 
    @Override
    public List<Point> findIntersections(Ray ray) {
-      return List.of();
+      // Initialize a list to hold the normals of the edges of the polygonal base
+      List<Vector> normals = new ArrayList<>(size);
+
+      // Get the starting point and direction of the ray
+      final Point startPoint = ray.getPoint(0);
+      final Vector dir = ray.getDirection();
+
+      // Calculate the normal vector for each edge of the polygonal base
+      Vector v1 = vertices.getFirst().subtract(startPoint);
+      for (Point p : vertices.subList(1, size)) {
+         Vector v2 = p.subtract(startPoint);
+         normals.add(v1.crossProduct(v2).normalize());
+         v1 = v2;
+      }
+      // Add the normal for the edge connecting the last vertex to the first vertex
+      normals.add(vertices.getLast().subtract(startPoint).crossProduct(vertices.getFirst().subtract(startPoint)).normalize());
+
+      // Determine if the ray direction is consistently on one side of all the polygon's edges
+      boolean allPositive = dir.dotProduct(normals.getFirst()) > 0;
+      for (Vector normal : normals) {
+         double s = dir.dotProduct(normal);
+         // If the dot product is zero or if it changes sign, the ray does not intersect the polygon's base
+         if (Util.isZero(s) || (s > 0 != allPositive)) {
+            return null;
+         }
+      }
+
+      // Create a plane defined by the first three vertices of the polygon
+      Plane plane = new Plane(vertices.getFirst(), vertices.get(1), vertices.get(2));
+
+      // Find and return the intersection points of the ray with the plane
+      return plane.findIntersections(ray);
    }
 
 }

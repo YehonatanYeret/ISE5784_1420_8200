@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /**
  * Testing Polygons
- * @author Dan
+ * @author Maor
  */
 public class PolygonTests {
     /**
@@ -86,4 +87,60 @@ public class PolygonTests {
                     "Polygon's normal is not orthogonal to one of the edges");
     }
 
+    /**
+     * Test method for {@link geometries.Polygon#findIntersections(primitives.Ray)}.
+     */
+    @Test
+    void testFindIntersections() {
+        Polygon mesh = new Polygon(new Point(1, 1, 0), new Point(1, 0, 0), new Point(-1,-1,0), new Point(0, 1, 0));
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: the intersection point is inside the Polygon
+        assertEquals(1, mesh.findIntersections(
+                        new Ray(new Point(-0.5, -0.5, 1), new Vector(0, 0, -1))).size(),
+                "Failed to find the intersection point when the intersection point is inside the Polygon");
+
+        // TC02: the intersection point is outside the Polygon and against an edge
+        assertNull(mesh.findIntersections(
+                        new Ray(new Point(0.5, 2, 1), new Vector(0, 0, -1))),
+                "Failed to find the intersection point when the intersection point is outside the Polygon and against an edge");
+
+        // TC03: the intersection point is outside the Polygon and against a vertex
+        assertNull(mesh.findIntersections(
+                        new Ray(new Point(2, 2, 1), new Vector(0, 0, -1))),
+                "Failed to find the intersection point when the intersection point is outside the Polygon and against an edge");
+
+        // ================= Boundary Values Tests =================
+        // TC04: the intersection point is on the edge of the Polygon
+        assertNull(mesh.findIntersections(
+                        new Ray(new Point(0.5, 1, -1), new Vector(0, 0, 1))),
+                "Failed to find the intersection point when the intersection point is on the edge of the Polygon");
+
+        // TC05: the intersection point is on the vertex of the Polygon
+        assertNull(mesh.findIntersections(
+                        new Ray(new Point(1, 1, 1), new Vector(0, 0, -1))),
+                "Failed to find the intersection point when the intersection point is on the vertex of the Polygon");
+
+        // TC06: the intersection point is outside the Polygon but in the path of the edge
+        assertNull(mesh.findIntersections(
+                        new Ray(new Point(2, 1, -1), new Vector(0, 0, 1))),
+                "Failed to find the intersection point when the intersection point is outside the Polygon but in the path of the edge");
+
+        // ================= external Tests =================
+        // TC07: the Polygon is in an angle
+        Polygon mesh2 = new Polygon(new Point(0, 1, 1), new Point(1, 1, 0), new Point(1,0,1),new Point(-1, -1, 4));
+        assertEquals(1, mesh2.findIntersections(
+                        new Ray(new Point(-1, -1, -1), new Vector(1, 1, 1))).size(),
+                "Failed to find the intersection point when the intersection point is inside the Polygon");
+
+        // TC08: the Polygon with 6 vertices
+        Polygon mesh3 = new Polygon(
+                new Point(1, 0, 0),
+                new Point(1,1,0),
+                new Point(0, 1, 0),
+                new Point(-1, 0, 0),
+                new Point(0, -1, 0));
+        assertEquals(1, mesh3.findIntersections(
+                        new Ray(new Point(-1, -1, -1), new Vector(1, 1, 1))).size(),
+                "Failed to find the intersection point when the intersection point is inside the Polygon");
+    }
 }
