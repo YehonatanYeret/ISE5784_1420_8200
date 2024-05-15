@@ -28,13 +28,13 @@ public class Sphere extends RadialGeometry{
     }
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<Point> findIntersections(Ray ray) {
 
         // if the ray starts at the center of the sphere
-        if (center.equals(ray.getHead()))
-            return List.of(ray.getHead().add(ray.getDirection().scale(radius)));
+        if (center.equals(ray.getPoint(0)))
+            return List.of(ray.getPoint(0).add(ray.getDirection().scale(radius)));
 
-        Vector u = (center.subtract(ray.getHead()));
+        Vector u = (center.subtract(ray.getPoint(0)));
         double tm = ray.getDirection().dotProduct(u);
         double d = Util.alignZero(Math.sqrt(u.lengthSquared() - tm * tm));
         if (d >= radius)
@@ -46,12 +46,11 @@ public class Sphere extends RadialGeometry{
 
 
         if (t1 > 0 && t2 > 0)
-            return List.of(ray.getHead().add(ray.getDirection().scale(t1)), ray.getHead().add(ray.getDirection().scale(t2)));
+            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t1)), ray.getPoint(0).add(ray.getDirection().scale(t2)));
         if (t1 > 0)
-            return List.of(ray.getHead().add(ray.getDirection().scale(t1)));
-
+            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t1)));
         if (t2 > 0)
-            return List.of(ray.getHead().add(ray.getDirection().scale(t2)));
+            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t2)));
 
         return null;
     }

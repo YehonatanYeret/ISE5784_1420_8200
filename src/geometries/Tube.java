@@ -28,17 +28,17 @@ public class Tube extends RadialGeometry {
     @Override
     public Vector getNormal(Point point) {
         //calculate the projection of the point on the axis
-        double t = this.axis.getDirection().dotProduct(point.subtract(this.axis.getHead()));
+        double t = this.axis.getDirection().dotProduct(point.subtract(this.axis.getPoint(0)));
         if(t == 0)//if the vector is orthogonal to the axis
-            return point.subtract(this.axis.getHead()).normalize();
+            return point.subtract(this.axis.getPoint(0)).normalize();
         //find center of the tube
-        Point o = this.axis.getHead().add(this.axis.getDirection().scale(t));
+        Point o = this.axis.getPoint(t);
         //return the normalized vector from the center of the tube to the point
         return point.subtract(o).normalize();
         }
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<Point> findIntersections(Ray ray) {
         return null;
     }
 }

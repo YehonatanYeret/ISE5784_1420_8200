@@ -26,23 +26,27 @@ public class Ray {
     }
 
     /**
-     * Getter for the direction of the ray
-     * @return the direction vector of the ray
+     * Getter for the point on the ray at a certain distance from the head
+     * @param t the distance from the head
+     * @return the point on the ray at the distance t from the head
      */
-    public Vector getDirection() {//may be deleted because the instruction
-        return direction;
-    }
-
-    /**
-     * Getter for the head of the ray
-     * @return the head point of the ray
-     */
-    public Point getHead() {//may be deleted because the instruction
-        return head;
+    public Point getPoint(double t) {
+        // if t is zero, return the head point
+        if(Util.isZero(t))
+            return head;
+        return head.add(direction.scale(t));
     }
 
     @Override
     public String toString() {
         return "head=" + head + ", direction=" + direction;
+    }
+
+    /**
+     * Getter for the head point of the ray
+     * @return the head point of the ray
+     */
+    public Vector getDirection() {
+        return direction;
     }
 }

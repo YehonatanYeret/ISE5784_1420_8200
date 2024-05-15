@@ -25,18 +25,18 @@ public class Cylinder extends Tube{
     @Override
     public Vector getNormal(Point point) {
         // If p0 is the head of the axis
-        if (point.equals(axis.getHead()))
+        if (point.equals(axis.getPoint(0)))
             return axis.getDirection().scale(-1);
 
         // If p1 is the end of the axis
-        if (point.equals(axis.getHead().add(axis.getDirection().scale(height))))
+        if (point.equals(axis.getPoint(0).add(axis.getDirection().scale(height))))
             return axis.getDirection();
 
         // If the point is on the top or bottom surface of the cylinder
-        if (axis.getHead().subtract(point).dotProduct(axis.getDirection()) == 0)
+        if (axis.getPoint(0).subtract(point).dotProduct(axis.getDirection()) == 0)
             return axis.getDirection().scale(-1);
 
-        if (axis.getHead().add(axis.getDirection().scale(height)).subtract(point).dotProduct(axis.getDirection()) == 0)
+        if (axis.getPoint(0).add(axis.getDirection().scale(height)).subtract(point).dotProduct(axis.getDirection()) == 0)
             return axis.getDirection();
 
         // Otherwise, call the superclass method
@@ -45,7 +45,7 @@ public class Cylinder extends Tube{
 
 
     @Override
-    public List<Point> findIntsersections(Ray ray){
+    public List<Point> findIntersections(Ray ray){
         return List.of();
     }
 }

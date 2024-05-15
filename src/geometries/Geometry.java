@@ -13,5 +13,5 @@ public interface Geometry extends Intersectable {
     Vector getNormal(Point point);
 
     @Override
-    List<Point> findIntsersections(Ray ray);
+    List<Point> findIntersections(Ray ray);
 }

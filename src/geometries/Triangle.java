@@ -28,10 +28,10 @@ public class Triangle extends Polygon {
      * @return a list of intersection points, or null if there are no intersections.
      */
     @Override
-    public List<Point> findIntsersections(Ray ray) {
-        Vector v1 = vertices.get(0).subtract(ray.getHead());
-        Vector v2 = vertices.get(1).subtract(ray.getHead());
-        Vector v3 = vertices.get(2).subtract(ray.getHead());
+    public List<Point> findIntersections(Ray ray) {
+        Vector v1 = vertices.get(0).subtract(ray.getPoint(0));
+        Vector v2 = vertices.get(1).subtract(ray.getPoint(0));
+        Vector v3 = vertices.get(2).subtract(ray.getPoint(0));
 
         // Calculate normal vectors for the triangle's sides
         Vector n1 = v1.crossProduct(v2).normalize();
@@ -53,7 +53,7 @@ public class Triangle extends Polygon {
             // Create a plane from the triangle's vertices
             Plane plane = new Plane(vertices.get(0), vertices.get(1), vertices.get(2));
             // Find intersections with the plane
-            return plane.findIntsersections(ray);
+            return plane.findIntersections(ray);
         }
 
         return null; // No intersection with the triangle
