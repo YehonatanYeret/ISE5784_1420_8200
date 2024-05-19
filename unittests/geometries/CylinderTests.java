@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CylinderTests {
 
 private final Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 1);
-private final Cylinder cylinder2 = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 8, 2);
+private final Cylinder cylinder2 = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), Math.sqrt(8), 2);
 
     /**
      * Test method for {@link geometries.Cylinder#Cylinder(primitives.Ray, double, double)}.

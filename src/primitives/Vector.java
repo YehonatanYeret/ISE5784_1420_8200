@@ -90,4 +90,15 @@ public class Vector extends Point {
     public Vector normalize() {
         return new Vector(this.xyz.reduce(this.length()));
     }
+
+    @Override
+    public String toString() {
+        return "->" + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        return obj instanceof Vector other && super.equals(other);
+    }
 }

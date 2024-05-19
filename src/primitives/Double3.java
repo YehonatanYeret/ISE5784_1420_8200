@@ -48,7 +48,7 @@ public class Double3 {
    @Override
    public boolean equals(Object obj) {
       if (this == obj) return true;
-      return (obj instanceof Double3 other)
+      return obj instanceof Double3 other
             && isZero(d1 - other.d1)
             && isZero(d2 - other.d2)
             && isZero(d3 - other.d3);
