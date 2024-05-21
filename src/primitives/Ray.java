@@ -20,7 +20,7 @@ public class Ray {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        return (obj instanceof Ray other)
+        return obj instanceof Ray other
                 && head.equals(other.head)
                 && direction.equals(other.direction);
     }
@@ -39,8 +39,9 @@ public class Ray {
 
     @Override
     public String toString() {
-        return "head=" + head + ", direction=" + direction;
+        return "" + head + direction;
     }
+
 
     /**
      * Getter for the head point of the ray
