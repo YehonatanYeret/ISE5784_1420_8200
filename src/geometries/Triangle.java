@@ -2,7 +2,6 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
-import primitives.Util;
 import primitives.Vector;
 
 import java.util.List;
@@ -24,35 +23,46 @@ public class Triangle extends Polygon {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        Vector dir = ray.getDirection();
-
-        Vector v1 = vertices.get(0).subtract(ray.getPoint(0));
-        Vector v2 = vertices.get(1).subtract(ray.getPoint(0));
-        Vector v3 = vertices.get(2).subtract(ray.getPoint(0));
-
-        // Calculate normal vectors for the triangle's sides
-        Vector n1 = v1.crossProduct(v2).normalize();
-        Vector n2 = v2.crossProduct(v3).normalize();
-        Vector n3 = v3.crossProduct(v1).normalize();
-
-        // Dot products of the ray direction with the normal vectors
-        double s1 = dir.dotProduct(n1);
-        double s2 = dir.dotProduct(n2);
-        double s3 = dir.dotProduct(n3);
-
-        // Check if the ray intersects the plane of the triangle
-        if (Util.isZero(s1) || Util.isZero(s2) || Util.isZero(s3)) {
-            return null; // The ray is parallel to one of the edges
+        List<Point> points = plane.findIntersections(ray);
+        if (points == null) {
+            return null;
         }
+        Point p = points.getFirst();
+        if(p.equals(vertices.get(0)) || p.equals(vertices.get(1)) || p.equals(vertices.get(2)))
+            return null;
 
-        // Check if the signs of the dot products are consistent
-        if ((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0)) {
-            // Create a plane from the triangle's vertices
-            Plane plane = new Plane(vertices.get(0), vertices.get(1), vertices.get(2));
-            // Find intersections with the plane
-            return plane.findIntersections(ray);
+        // Calculate vectors
+        Vector v0 = vertices.get(1).subtract(vertices.get(0));
+        Vector v1 = vertices.get(2).subtract(vertices.get(0));
+        Vector v2 = p.subtract(vertices.get(0));
+
+        // Compute dot products
+        double dot00 = v0.dotProduct(v0);
+        double dot01 = v0.dotProduct(v1);
+        double dot02 = v0.dotProduct(v2);
+        double dot11 = v1.dotProduct(v1);
+        double dot12 = v1.dotProduct(v2);
+
+        /*
+         * Compute barycentric coordinates:
+         * to use the barycentric coordinates to determine if a point is inside a triangle,
+         * we need to compute the barycentric coordinates of the point with respect to the triangle.
+         * after some proofs, we found that:
+         * d00 * v + d01 * u = d02
+         * d01 * v + d11 * u = d12
+         * so we can use kermers rule to solve the equations and found v, u and w
+         */
+        
+        // Compute Barycentric coordinates
+        double invdet = 1 / (dot00 * dot11 - dot01 * dot01);// 1 / determinant of the equation before
+        double u = (dot11 * dot02 - dot01 * dot12) * invdet;
+        double v = (dot00 * dot12 - dot01 * dot02) * invdet;
+        double w = 1.0 - u - v;
+
+        // Check if point is in triangle
+        if (u > 0 && v > 0 && w > 0 && u + v + w <= 1) {
+            return points;
         }
-
-        return null; // No intersection with the triangle
+        return null;
     }
 }

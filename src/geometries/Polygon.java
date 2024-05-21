@@ -87,7 +87,7 @@ public class Polygon implements Geometry {
    @Override
    public List<Point> findIntersections(Ray ray) {
       // Initialize a list to hold the normals of the edges of the polygonal base
-      List<Vector> normals = new ArrayList<>(size);
+      List<Vector> normals = new LinkedList<>();
 
       // Get the starting point and direction of the ray
       final Point startPoint = ray.getPoint(0);
