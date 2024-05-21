@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 public class Geometries implements Intersectable{
-    private final List<Intersectable> geometries = new LinkedList<Intersectable>();
+    private final List<Intersectable> geometries = new LinkedList<>();
 
     /**
      * Default constructor
@@ -16,7 +16,7 @@ public class Geometries implements Intersectable{
 
     /**
      *
-     * @param geometries
+     * @param geometries the geometries to add
      */
     public Geometries(Intersectable... geometries) {
         add(geometries);
@@ -38,7 +38,7 @@ public class Geometries implements Intersectable{
             List<Point> geometryIntersections = geometry.findIntersections(ray);
             if (geometryIntersections != null) {
                 if (intersections == null)
-                    intersections = new LinkedList<Point>();
+                    intersections = new LinkedList<>();
                 intersections.addAll(geometryIntersections);
             }
         }
