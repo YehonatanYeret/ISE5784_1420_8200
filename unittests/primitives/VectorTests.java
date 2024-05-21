@@ -10,7 +10,15 @@ import static primitives.Util.isZero;
  */
 class VectorTests {
     private final double DELTA = 0.00001;
-
+    private final Point p1 = new Point(1, 2, 3);
+    private final Vector v1 = new Vector(1, 2, 3);
+    private final Vector v2 = new Vector(4, 2, -3);
+    private final Vector v3 = new Vector(-1, -2, -3);
+    private final Vector v4 = new Vector(1, 0, 0);
+    private final Vector v5 = new Vector(0, 1, 0);
+    private final Vector v6 = new Vector(0, 0, 1);
+    private final Vector v7 = new Vector(-1, 2, -2);
+    private final Vector v8 = new Vector(2, 1, 1);
     /**
      * Test method for {@link primitives.Vector#Vector(double, double, double)}.
      */
@@ -18,7 +26,7 @@ class VectorTests {
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertDoesNotThrow(() -> new Vector(1, 2, 3), "Failed constructing a vector with 3 coordinates");
+        assertDoesNotThrow(() -> v1, "Failed constructing a vector with 3 coordinates");
 
         // TC02: current vector with the other ctor
         assertDoesNotThrow(() -> new Vector(new Double3(1, 2, 3)), "Failed constructing a vector with Double3 param");
@@ -28,7 +36,7 @@ class VectorTests {
         assertThrows(IllegalArgumentException.class, () -> new Vector(0, 0, 0), "Constructed a zero vector");
 
         // TC04: Zero vector with the other ctor
-        assertThrows(IllegalArgumentException.class, () -> new Vector(new Double3(0, 0, 0)), "Constructed a zero vector");
+        assertThrows(IllegalArgumentException.class, () -> new Vector(Double3.ZERO), "Constructed a zero vector");
     }
 
     /**
@@ -36,9 +44,6 @@ class VectorTests {
      */
     @Test
     void testAdd() {
-        Vector v1 = new Vector(1, 2, 3);
-        Vector v2 = new Vector(4, 2, -3);
-        Vector v3 = new Vector(-1, -2, -3);
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
         assertEquals(new Vector(5, 4, 0), v1.add(v2), "Wrong result of adding two vectors");
@@ -55,7 +60,7 @@ class VectorTests {
     void testScale() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(new Vector(2, 4, 6), new Vector(1, 2, 3).scale(2), "Wrong result of scaling a vector");
+        assertEquals(new Vector(2, 4, 6), v1.scale(2), "Wrong result of scaling a vector");
 
         // =============== Boundary Values Tests ==================
         // TC02: scale by zero
@@ -69,15 +74,15 @@ class VectorTests {
     void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(7, new Vector(1, 2, 3).dotProduct(new Vector(2, 1, 1)), DELTA, "Wrong result of dot product");
+        assertEquals(7, v1.dotProduct(new Vector(2, 1, 1)), DELTA, "Wrong result of dot product");
 
         // =============== Boundary Values Tests ==================
 
         // TC02: one of the vectors is the singularity vector
-        assertEquals(1, new Vector(1, 2, 3).dotProduct(new Vector(1, 0, 0)), DELTA,"Dot product with singularity vector");
+        assertEquals(1, v1.dotProduct(v4), DELTA, "Dot product with singularity vector");
 
         // TC03: dot product with zero vector
-        assertEquals(0, new Vector(1, 0, 0).dotProduct(new Vector(0, 0, 1)), DELTA,"Dot product with zero vector");
+        assertEquals(0, v4.dotProduct(v6), DELTA, "Dot product with zero vector");
     }
 
     /**
@@ -87,30 +92,26 @@ class VectorTests {
     void testCrossProduct() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        Vector vec1 = new Vector(1, 0, 0);
-        Vector vec2 = new Vector(0, 1, 0);
-        Vector vec3 = new Vector(0, 0, 1);
-        assertEquals(vec1 , vec2.crossProduct(vec3), "Wrong result of cross product");
+
+        assertEquals(v4, v5.crossProduct(v6), "Wrong result of cross product");
         //check dot product with the result
-        assertTrue(isZero(vec3.dotProduct(vec1)), "Cross product is not orthogonal to its operands");
-        assertTrue(isZero(vec2.dotProduct(vec1)), "Cross product is not orthogonal to its operands");
+        assertTrue(isZero(v6.dotProduct(v4)), "Cross product is not orthogonal to its operands");
+        assertTrue(isZero(v5.dotProduct(v4)), "Cross product is not orthogonal to its operands");
         // =============== Boundary Values Tests ==================
 
-        Vector v1 = new Vector(1, 2, 3);
-        Vector v2 = new Vector(2, 1, 1);
-        Vector vr = v1.crossProduct(v2);
+        Vector vr = v1.crossProduct(v8);
 
         // TC02: the vectors are parallel
-        assertThrows(IllegalArgumentException.class, () -> new Vector(1, 2, 3).crossProduct(new Vector(2, 4, 6)), "did not constructed a zero vector");
+        assertThrows(IllegalArgumentException.class, () -> v1.crossProduct(new Vector(2, 4, 6)), "did not constructed a zero vector");
 
         // TC03: the vector are equal
-        assertThrows(IllegalArgumentException.class, () -> new Vector(1, 2, 3).crossProduct(new Vector(1, 2, 3)), "did not constructed a zero vector");
+        assertThrows(IllegalArgumentException.class, () -> v1.crossProduct(v1), "did not constructed a zero vector");
 
         // TC04: the cross product is not orthogonal to its operands
-        assertTrue(isZero(vr.dotProduct(v1)) && isZero(vr.dotProduct(v2)), "Cross product is not orthogonal to its operands");
+        assertTrue(isZero(vr.dotProduct(v1)) && isZero(vr.dotProduct(v8)), "Cross product is not orthogonal to its operands");
 
         // TC05: the vectors are the same length but not parallel
-        assertEquals(new Vector(1,7,-5), new Vector(1, 2, 3).crossProduct(new Vector(3, 1, 2)), "Wrong result of cross product");
+        assertEquals(new Vector(1, 7, -5), v1.crossProduct(new Vector(3, 1, 2)), "Wrong result of cross product");
 
     }
 
@@ -121,11 +122,11 @@ class VectorTests {
     void testLengthSquared() {
         //============ Equivalence Partitions Tests ==============
         // TC01: Correct vector
-        assertEquals(14, new Vector(1, 2, 3).lengthSquared(), DELTA,"Wrong result of length squared");
+        assertEquals(14, v1.lengthSquared(), DELTA, "Wrong result of length squared");
 
         // =============== Boundary Values Tests ==================
         // TC02: positive and negative vector
-        assertEquals(9, new Vector(-1, 2, -2).lengthSquared(), DELTA,"Wrong result of length squared");
+        assertEquals(9, v7.lengthSquared(), DELTA, "Wrong result of length squared");
     }
 
     /**
@@ -139,7 +140,7 @@ class VectorTests {
 
         // =============== Boundary Values Tests ==================
         // TC02: positive and negative vector
-        assertEquals(3, new Vector(-1, 2, -2).length(), DELTA,"Wrong result of length");
+        assertEquals(3, v7.length(), DELTA, "Wrong result of length");
     }
 
     /**
@@ -153,11 +154,11 @@ class VectorTests {
 
         // =============== Boundary Values Tests ==================
         // TC02: zero vector
-        Vector v1 = new Vector(1, 4, 7);
-        assertThrows(IllegalArgumentException.class, () -> v1.normalize().crossProduct(v1), "Normalized a zero vector");
+        Vector v = new Vector(1, 4, 7);
+        assertThrows(IllegalArgumentException.class, () -> v.normalize().crossProduct(v), "Normalized a zero vector");
 
         //TC03: Correct vector normalized is the same vector
-        assertEquals(new Vector(1, 0, 0), new Vector(1, 0, 0).normalize(), "Wrong result of normalization");
+        assertEquals(v4, v4.normalize(), "Wrong result of normalization");
 
         //TC04: v.normalized*v bigger than 0
         assertTrue(v1.normalize().dotProduct(v1) > 0, "Normalized vector is not parallel to the original one");
@@ -170,10 +171,10 @@ class VectorTests {
     void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Subtract two points
-        assertEquals(new Vector(1, 2, 3), new Point(2, 4, 6).subtract(new Point(1, 2, 3)), "Subtract two points does not work correctly");
+        assertEquals(v1, new Point(2, 4, 6).subtract(p1), "Subtract two points does not work correctly");
 
         // ============ Boundary Values Tests ==================
         // TC02: Subtract equal points
-        assertThrows(IllegalArgumentException.class, () -> new Point(1, 2, 3).subtract(new Point(1, 2, 3)), "Subtract equal points does not work correctly");
+        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1), "Subtract equal points does not work correctly");
     }
 }

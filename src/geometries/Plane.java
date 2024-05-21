@@ -54,13 +54,15 @@ public class Plane implements Geometry{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        if(Util.isZero(ray.getDirection().dotProduct(normal)) || q.equals(ray.getPoint(0))) {
+        Vector direction = ray.getDirection();
+        Point p0 = ray.getPoint(0);
+        // if the ray is parallel to the plane or the ray starts on the plane at the point q
+        if(Util.isZero(direction.dotProduct(normal)) || q.equals(p0))
             return null;
-        }
-        double t = normal.dotProduct(q.subtract(ray.getPoint(0))) / normal.dotProduct(ray.getDirection());
-        if (t <= 0) {
-            return null;
-        }
-        return List.of(ray.getPoint(0).add(ray.getDirection().scale(t)));
+
+        // calculate the intersection point
+        double t = normal.dotProduct(q.subtract(p0)) / normal.dotProduct(direction);
+
+        return t <= 0? null : List.of(p0.add(direction.scale(t)));
     }
 }

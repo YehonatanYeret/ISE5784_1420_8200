@@ -1,4 +1,5 @@
 package geometries;
+
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -9,11 +10,12 @@ import java.util.List;
 /**
  * Class Sphere is the basic class representing a sphere in the 3D space
  */
-public class Sphere extends RadialGeometry{
+public class Sphere extends RadialGeometry {
     private final Point center;
 
     /**
      * Constructor to initialize a sphere based on a radius and a center point
+     *
      * @param radius radius of the sphere
      * @param center center point of the sphere
      */
@@ -29,13 +31,15 @@ public class Sphere extends RadialGeometry{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
+        Point p0 = ray.getPoint(0);
+        Vector dir = ray.getDirection();
 
         // if the ray starts at the center of the sphere
-        if (center.equals(ray.getPoint(0)))
-            return List.of(ray.getPoint(0).add(ray.getDirection().scale(radius)));
+        if (center.equals(p0))
+            return List.of(p0.add(dir.scale(radius)));
 
-        Vector u = (center.subtract(ray.getPoint(0)));
-        double tm = ray.getDirection().dotProduct(u);
+        Vector u = (center.subtract(p0));
+        double tm = dir.dotProduct(u);
         double d = Util.alignZero(Math.sqrt(u.lengthSquared() - tm * tm));
         if (d >= radius)
             return null;
@@ -44,13 +48,15 @@ public class Sphere extends RadialGeometry{
         double t1 = Util.alignZero(tm - th);
         double t2 = Util.alignZero(tm + th);
 
-
+        // if the ray starts before the sphere
         if (t1 > 0 && t2 > 0)
-            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t1)), ray.getPoint(0).add(ray.getDirection().scale(t2)));
+            return List.of(p0.add(dir.scale(t1)), p0.add(dir.scale(t2)));
+
+        // if the ray starts inside the sphere
         if (t1 > 0)
-            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t1)));
+            return List.of(p0.add(dir.scale(t1)));
         if (t2 > 0)
-            return List.of(ray.getPoint(0).add(ray.getDirection().scale(t2)));
+            return List.of(p0.add(dir.scale(t2)));
 
         return null;
     }

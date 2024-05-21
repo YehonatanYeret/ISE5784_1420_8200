@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CylinderTests {
 
-private final Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 1);
+    private final Vector v1 = new Vector(0,0,-1);
+    private final Vector v2 = new Vector(0,0,1);
+    private final Cylinder cylinder = new Cylinder(new Ray(Point.ZERO, v2), 1, 1);
     /**
      * Test method for {@link geometries.Cylinder#Cylinder(primitives.Ray, double, double)}.
      */
@@ -18,8 +20,7 @@ private final Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new V
     void testConstructor() {
     // ============ Equivalence Partitions Tests ==============
     // TC01: Test for a proper result
-        assertDoesNotThrow(() -> new Cylinder(new Ray(new Point(0, 0, 0), new Vector(0, 0, 1)), 1, 1));
-
+        assertDoesNotThrow(() -> new Cylinder(new Ray(Point.ZERO, v2), 1, 1));
     }
 
     /**
@@ -34,34 +35,28 @@ private final Cylinder cylinder = new Cylinder(new Ray(new Point(0, 0, 0), new V
                 "Bad normal to cylinder");
 
         // TC02: the point is on the bottom outer surface of the cylinder
-        assertEquals(new Vector(0,0,-1),
-                cylinder.getNormal(new Point(0, 0.5, 0)),
+        assertEquals(v1, cylinder.getNormal(new Point(0, 0.5, 0)),
                 "Bad normal to cylinder");
 
         // TC03: the point is on the side outer surface of the cylinder
-        assertEquals(new Vector(0,0,1),
-                cylinder.getNormal(new Point(0, 0.5, 1)),
+        assertEquals(v2, cylinder.getNormal(new Point(0, 0.5, 1)),
                 "Bad normal to cylinder");
 
         // =============== Boundary Values Tests ==================
         // TC04: the point is on the top edge of the cylinder;
-        assertEquals(new Vector(0, 0, 1),
-                cylinder.getNormal(new Point(0, 1, 1)),
+        assertEquals(v2, cylinder.getNormal(new Point(0, 1, 1)),
                 "Bad normal to cylinder");
 
         // TC05: the point is on the bottom edge of the cylinder
-        assertEquals(new Vector(0,0,-1),
-                cylinder.getNormal(new Point(0, 1, 0)),
+        assertEquals(v1, cylinder.getNormal(new Point(0, 1, 0)),
                 "Bad normal to cylinder");
 
         // TC06: the point is in the middle bottom outer surface of the cylinder
-        assertEquals(new Vector(0,0,-1),
-                cylinder.getNormal(new Point(0, 0, 0)),
+        assertEquals(v1, cylinder.getNormal(Point.ZERO),
                 "Bad normal to cylinder");
 
         // TC07: the point is in the middle top edge of the cylinder
-        assertEquals(new Vector(0, 0, 1),
-                cylinder.getNormal(new Point(0, 0, 1)),
+        assertEquals(v2, cylinder.getNormal(new Point(0, 0, 1)),
                 "Bad normal to cylinder");
 
     }

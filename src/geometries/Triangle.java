@@ -24,6 +24,8 @@ public class Triangle extends Polygon {
 
     @Override
     public List<Point> findIntersections(Ray ray) {
+        Vector dir = ray.getDirection();
+
         Vector v1 = vertices.get(0).subtract(ray.getPoint(0));
         Vector v2 = vertices.get(1).subtract(ray.getPoint(0));
         Vector v3 = vertices.get(2).subtract(ray.getPoint(0));
@@ -34,9 +36,9 @@ public class Triangle extends Polygon {
         Vector n3 = v3.crossProduct(v1).normalize();
 
         // Dot products of the ray direction with the normal vectors
-        double s1 = ray.getDirection().dotProduct(n1);
-        double s2 = ray.getDirection().dotProduct(n2);
-        double s3 = ray.getDirection().dotProduct(n3);
+        double s1 = dir.dotProduct(n1);
+        double s2 = dir.dotProduct(n2);
+        double s3 = dir.dotProduct(n3);
 
         // Check if the ray intersects the plane of the triangle
         if (Util.isZero(s1) || Util.isZero(s2) || Util.isZero(s3)) {

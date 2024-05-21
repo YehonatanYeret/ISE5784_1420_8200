@@ -9,16 +9,26 @@ import java.util.LinkedList;
 public class Geometries implements Intersectable{
     private final LinkedList<Intersectable> geometries = new LinkedList<Intersectable>();
 
+    /**
+     * Default constructor
+     */
     public Geometries() { }
 
+    /**
+     *
+     * @param geometries
+     */
     public Geometries(Intersectable... geometries) {
         add(geometries);
     }
 
+    /**
+     * Add geometries to the list
+     * @param geometries the geometries to add
+     */
     public void add(Intersectable... geometries) {
         for (Intersectable geometry : geometries)
             this.geometries.add(geometry);
-
     }
 
     @Override
