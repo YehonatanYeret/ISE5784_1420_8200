@@ -31,10 +31,10 @@ public class Tube extends RadialGeometry {
         double t = this.axis.getDirection().dotProduct(point.subtract(this.axis.getPoint(0)));
         if(t == 0)//if the vector is orthogonal to the axis
             return point.subtract(this.axis.getPoint(0)).normalize();
+
         //find center of the tube
-        Point o = this.axis.getPoint(t);
         //return the normalized vector from the center of the tube to the point
-        return point.subtract(o).normalize();
+        return point.subtract(this.axis.getPoint(t)).normalize();
         }
 
     @Override
