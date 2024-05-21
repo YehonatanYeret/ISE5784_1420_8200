@@ -48,7 +48,7 @@ class TriangleTest {
 
         // TC05: the intersection point is on the vertex of the triangle
         assertNull(triangle.findIntersections(
-                        new Ray(new Point(1, 1, 1), v1)),
+                        new Ray(new Point(1, 1, 1), new Vector(0, 0, -1))),
                 "Failed to find the intersection point when the intersection point is on the vertex of the triangle");
 
         // TC06: the intersection point is outside the triangle but in the path of the edge
