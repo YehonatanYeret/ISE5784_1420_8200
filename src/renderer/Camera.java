@@ -19,6 +19,63 @@ public class Camera implements Cloneable {
     private double distance = 0d;
 
     /**
+     * Camera getter
+     * @return the location of the camera
+     */
+    public Point getP0() {
+        return p0;
+    }
+
+    /**
+     * Camera getter
+     * @return the up direction of the camera
+     */
+    public Vector getVUp() {
+        return vUp;
+    }
+
+    /**
+     * Camera getter
+     * @return the direction of the camera
+     */
+    public Vector getVTo() {
+        return vTo;
+    }
+
+    /**
+     * Camera getter
+     * @return the right direction of the camera
+     */
+    public Vector getVRight() {
+        return vRight;
+    }
+
+    /**
+     * Camera getter
+     * @return the width of the view plane
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Camera getter
+     * @return the height of the view plane
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * Camera getter
+     * @return the distance between the camera and the view plane
+     */
+    public double getDistance() {
+        return distance;
+    }
+
+
+    /**
      * Camera builder
      */
     public static class Builder {
@@ -123,7 +180,6 @@ public class Camera implements Cloneable {
                 throw new RuntimeException(e);
             }
         }
-
     }
 
     /**
