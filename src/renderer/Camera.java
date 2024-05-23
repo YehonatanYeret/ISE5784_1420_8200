@@ -100,7 +100,7 @@ public class Camera implements Cloneable {
 *                     (the vector from the camera to the up direction)
          */
         public Builder setDirection(Vector vTo, Vector vUp) {
-            if (Util.isZero(vTo.dotProduct(vUp))) {
+            if (!Util.isZero(vTo.dotProduct(vUp))) {
                 throw new IllegalArgumentException("vTo and vUp must be orthogonal");
             }
             camera.vTo = vTo.normalize();
@@ -128,7 +128,7 @@ public class Camera implements Cloneable {
          *
          * @param distance the distance between the camera and the view plane
          */
-        public Builder setVPDistance(double distance) {
+        public Builder setVpDistance(double distance) {
             if(distance <= 0) {
                 throw new IllegalArgumentException("distance from camera to view must be positive");
             }
@@ -160,9 +160,9 @@ public class Camera implements Cloneable {
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
-            if(Util.isZero(camera.vTo.dotProduct(camera.vRight)) ||
-                    Util.isZero(camera.vTo.dotProduct(camera.vUp)) ||
-                    Util.isZero(camera.vRight.dotProduct(camera.vUp)))
+            if(!Util.isZero(camera.vTo.dotProduct(camera.vRight)) ||
+                    !Util.isZero(camera.vTo.dotProduct(camera.vUp)) ||
+                    !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
             if(camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
