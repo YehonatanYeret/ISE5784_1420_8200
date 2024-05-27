@@ -47,9 +47,11 @@ public class Triangle extends Polygon {
          * Compute barycentric coordinates:
          * to use the barycentric coordinates to determine if a point is inside a triangle,
          * we need to compute the barycentric coordinates of the point with respect to the triangle.
-         * after some proofs, we found that:
-         * d00 * v + d01 * u = d02
-         * d01 * v + d11 * u = d12
+         * after some proofs, we found the matrix equation:
+         *
+         * |d00  d01| |v|= |d02|
+         * |d01  d11| |v|= |d12|
+         *
          * so we can use kermers rule to solve the equations and found v, u and w
          */
         

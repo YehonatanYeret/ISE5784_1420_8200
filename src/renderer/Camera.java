@@ -20,7 +20,6 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
-     *
      * @return the location of the camera
      */
     public Point getP0() {
@@ -29,7 +28,6 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
-     *
      * @return the up direction of the camera
      */
     public Vector getVUp() {
@@ -38,7 +36,6 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
-     *
      * @return the direction of the camera
      */
     public Vector getVTo() {
@@ -47,7 +44,6 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
-     *
      * @return the right direction of the camera
      */
     public Vector getVRight() {
@@ -56,7 +52,6 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
-     *
      * @return the width of the view plane
      */
     public double getWidth() {
@@ -149,21 +144,21 @@ public class Camera implements Cloneable {
          * @return the camera
          */
         public Camera build() {
-            String className = "Camera";
-            String description = "values not set";
+            final String className = "Camera";
+            final String description = "values not set: ";
 
-            if (camera.p0 == null)
-                throw new MissingResourceException(className, description, "p0");
-            if (camera.vUp == null)
-                throw new MissingResourceException(className, description, "vUp");
-            if (camera.vTo == null)
-                throw new MissingResourceException(className, description, "vTo");
-            if (camera.width == 0d)
-                throw new MissingResourceException(className, description, "width");
-            if (camera.height == 0d)
-                throw new MissingResourceException(className, description, "height");
-            if (camera.distance == 0d)
-                throw new MissingResourceException(className, description, "distance");
+            if(camera.p0 == null)
+                throw new MissingResourceException(description, className, "p0");
+            if(camera.vUp == null)
+                throw new MissingResourceException(description, className, "vUp");
+            if(camera.vTo == null)
+                throw new MissingResourceException(description, className, "vTo");
+            if(camera.width == 0d)
+                throw new MissingResourceException(description, className, "width");
+            if(camera.height == 0d)
+                throw new MissingResourceException(description, className, "height");
+            if(camera.distance == 0d)
+                throw new MissingResourceException(description, className, "distance");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
@@ -218,7 +213,7 @@ public class Camera implements Cloneable {
         double yI = -(i - (nY - 1) / 2d) * height / nY;
         double xJ = (j - (nX - 1) / 2d) * width / nX;
 
-        //check if xJ or yI are not zero so we will not add zero vector
+        //check if xJ or yI are not zero, so we will not add zero vector
         if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
         if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
 

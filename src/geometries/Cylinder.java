@@ -28,29 +28,23 @@ public class Cylinder extends Tube {
     public Vector getNormal(Point point) {
         Point p0 = axis.getPoint(0);
         Vector dir = this.axis.getDirection();
-        Vector dirP1 = dir.scale(height);
 
        //  If p0 is the head of the axis
         if (point.equals(p0))
             return dir.scale(-1);
 
         // If p1 is the end of the axis
-        if (point.equals(p0.add(dirP1)))
+        if (point.equals(axis.getPoint(height)))
             return dir;
 
         // If the point is on the top or bottom surface of the cylinder
         if (p0.subtract(point).dotProduct(dir) == 0)
             return dir.scale(-1);
 
-        if (p0.add(dirP1).subtract(point).dotProduct(dir) == 0)
+        if (axis.getPoint(height).subtract(point).dotProduct(dir) == 0)
             return dir;
 
         // Otherwise, call the superclass method
         return super.getNormal(point);
     }
-
-    @Override
-    public List<Point> findIntersections(Ray ray) {
-        return null;
-        }
 }
