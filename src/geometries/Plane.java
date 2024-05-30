@@ -63,6 +63,6 @@ public class Plane implements Geometry{
         // calculate the intersection point
         double t = normal.dotProduct(q.subtract(p0)) / normal.dotProduct(direction);
 
-        return t <= 0? null : List.of(p0.add(direction.scale(t)));
+        return Util.alignZero(t) <= 0? null : List.of(p0.add(direction.scale(t)));
     }
 }

@@ -2,9 +2,8 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
-
-import java.util.List;
 
 /**
  * Class Cylinder is the basic class representing a cylinder in the 3D space.
@@ -38,10 +37,10 @@ public class Cylinder extends Tube {
             return dir;
 
         // If the point is on the top or bottom surface of the cylinder
-        if (p0.subtract(point).dotProduct(dir) == 0)
+        if (Util.isZero(p0.subtract(point).dotProduct(dir)))
             return dir.scale(-1);
 
-        if (axis.getPoint(height).subtract(point).dotProduct(dir) == 0)
+        if (Util.isZero(axis.getPoint(height).subtract(point).dotProduct(dir)))
             return dir;
 
         // Otherwise, call the superclass method

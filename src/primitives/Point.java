@@ -1,7 +1,4 @@
 package primitives;
-
-import org.junit.jupiter.api.function.Executable;
-
 /**
  * Class Point is the basic class representing a point in the 3D space
  * @author Maor
@@ -72,6 +69,30 @@ public class Point {
      */
     public double distance(Point p1) {
         return Math.sqrt(distanceSquared(p1));
+    }
+
+    /**
+     * getter for x coordinate
+     * @return the X coordinate
+     */
+    public  double getX(){
+        return xyz.d1;
+    }
+
+    /**
+     * getter for y coordinate
+     * @return the y coordinate
+     */
+    public double getY(){
+        return xyz.d2;
+    }
+
+    /**
+     * getter for z coordinate
+     * @return the z coordinate
+     */
+    public double getZ(){
+        return xyz.d3;
     }
 
     @Override

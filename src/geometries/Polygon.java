@@ -68,7 +68,7 @@ public class Polygon implements Geometry {
       // first edge being less than 180 deg. It is hold by the sign of its dot product
       // with the normal. If all the rest consequent edges will generate the same sign
       // - the polygon is convex ("kamur" in Hebrew).
-      boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
+      boolean positive = Util.alignZero(edge1.crossProduct(edge2).dotProduct(n)) > 0;
       for (var i = 1; i < vertices.length; ++i) {
          // Test that the point is in the same plane as calculated originally
          if (!isZero(vertices[i].subtract(vertices[0]).dotProduct(n)))
@@ -76,7 +76,7 @@ public class Polygon implements Geometry {
          // Test the consequent edges have
          edge1 = edge2;
          edge2 = vertices[i].subtract(vertices[i - 1]);
-         if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
+         if (positive != (Util.alignZero(edge1.crossProduct(edge2).dotProduct(n)) > 0))
             throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
       }
    }
@@ -108,13 +108,10 @@ public class Polygon implements Geometry {
       for (Vector normal : normals) {
          double s = dir.dotProduct(normal);
          // If the dot product is zero or if it changes sign, the ray does not intersect the polygon's base
-         if (Util.isZero(s) || (s > 0 != allPositive)) {
+         if (Util.isZero(s) || (Util.alignZero(s) > 0 != allPositive)) {
             return null;
          }
       }
-
-      // Create a plane defined by the first three vertices of the polygon
-      Plane plane = new Plane(vertices.getFirst(), vertices.get(1), vertices.get(2));
 
       // Find and return the intersection points of the ray with the plane
       return plane.findIntersections(ray);
