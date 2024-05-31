@@ -5,6 +5,7 @@ import geometries.Sphere;
 import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Vector;
+import scene.Scene;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public class RayIntersectionTest {
     private final Vector zAxis = new Vector(0, 0, -1);
 
     private final Camera.Builder cameraBuilder = Camera.getBuilder()
+            .setRayTracer(new SimpleRayTracer(new Scene("Test")))
+            .setImageWriter(new ImageWriter("Test", 1, 1))
             .setDirection(zAxis, yAxis)
             .setVpDistance(1)
             .setVpSize(3, 3);
