@@ -1,6 +1,8 @@
 package renderer;
 
 import static java.awt.Color.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,25 +51,21 @@ public class RenderTests {
     /** Test for XML based scene - for bonus */
     @Test
     public void basicRenderJson() {
-        // enter XML file name and parse from XML file into scene object
-        // using the code you added in appropriate packages
-        // ...
-        // NB: unit tests is not the correct place to put XML parsing code
-
-        try {
+        // This is the test for the bonus part of the exercise
+        //try to load a scene from a json file and render it
+        //fail if the function throws
+        assertDoesNotThrow(() -> {
             Scene scene1 = JsonScene.importScene("images/test1.json", "Test scene");
 
             camera
-                    .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
+                    .setImageWriter(new ImageWriter("json render test", 1000, 1000))
                     .setRayTracer(new SimpleRayTracer(scene1))
                     .build()
                     .renderImage()
                     .printGrid(100, new Color(YELLOW))
                     .writeToImage();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        }, "Failed to render image");
     }
 }
 

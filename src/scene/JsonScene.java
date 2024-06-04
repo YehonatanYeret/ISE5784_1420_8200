@@ -12,6 +12,7 @@ import geometries.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,18 +41,10 @@ public class JsonScene {
 
         Geometries geometries = new Geometries(parseGeometries((JSONArray) sceneObj.get("geometries")).toArray(new Geometry[0]));
 
-        return new Scene(name).setGeometries(geometries).setBackground(background).setAmbientLight(new AmbientLight(ambientLight, ka));
-    }
-
-    /**
-     * Parses a color from a string in the format "R G B".
-     *
-     * @param rgb the string representing the color
-     * @return the parsed color
-     */
-    private static Color parseColor(String rgb) {
-        String[] rgbArr = rgb.split(" ");
-        return new Color(Double.parseDouble(rgbArr[0]), Double.parseDouble(rgbArr[1]), Double.parseDouble(rgbArr[2]));
+        return new Scene(name)
+                .setGeometries(geometries)
+                .setBackground(background)
+                .setAmbientLight(new AmbientLight(ambientLight, ka));
     }
 
     /**
@@ -69,9 +62,24 @@ public class JsonScene {
                 geometries.add(parseSphere((JSONObject) geometryObj.get("sphere")));
             } else if (geometryObj.containsKey("triangle")) {
                 geometries.add(parseTriangle((JSONObject) geometryObj.get("triangle")));
+            }else if(geometryObj.containsKey("polygon")) {
+                geometries.add(parsePolygon((JSONObject) geometryObj.get("polygon")));
+            }else if (geometryObj.containsKey("plane")) {
+                geometries.add(parsePlane((JSONObject) geometryObj.get("plane")));
+            }else{
+                throw new IllegalArgumentException("Unknown geometry type");
             }
         }
         return geometries;
+    }
+
+    /**
+     * Parses a polygon from a JSON object.
+     * @param polygon the JSON object representing a polygon
+     * @return the parsed polygon
+     */
+    private static Geometry parsePolygon(JSONObject polygon) {
+        return new Polygon(parseVertices(polygon));
     }
 
     /**
@@ -82,7 +90,7 @@ public class JsonScene {
      */
     private static Sphere parseSphere(JSONObject sphereObj) {
         Point center = parsePoint((String) sphereObj.get("center"));
-        double radius = Double.parseDouble((String) sphereObj.get("radius"));
+        double radius = ((Number) sphereObj.get("radius")).doubleValue();
         return new Sphere(radius, center);
     }
 
@@ -93,12 +101,65 @@ public class JsonScene {
      * @return the parsed triangle
      */
     private static Polygon parseTriangle(JSONObject triangleObj) {
-        JSONArray verticesArray = (JSONArray) triangleObj.get("vertices");
-        Point[] vertices = new Point[verticesArray.size()];
+        Point[] points = parseVertices(triangleObj);
+        return new Triangle(points[0], points[1], points[2]);
+    }
+
+    /**
+     * Parses a plane from a JSON object.
+     * @param planeObj the JSON object representing a plane
+     * @return the parsed plane
+     */
+    private static Plane parsePlane(JSONObject planeObj) {
+        Point point = parsePoint((String) planeObj.get("point"));
+        Vector normal = parseVector((String) planeObj.get("normal"));
+        return new Plane(point, normal);
+    }
+
+    /**
+     * Parses an array of vertices from a JSON array.
+     * @param vertices the JSON object representing vertices
+     * @return the parsed array of vertices
+     */
+    private static Point[] parseVertices(JSONObject vertices) {
+        JSONArray verticesArray = (JSONArray) vertices.get("vertices");
+        Point[] points = new Point[verticesArray.size()];
         for (int i = 0; i < verticesArray.size(); i++) {
-            vertices[i] = parsePoint((String) verticesArray.get(i));
+            points[i] = parsePoint((String) verticesArray.get(i));
         }
-        return new Polygon(vertices);
+        return points;
+    }
+
+    /**
+     * Parses coordinates from a string in the format "X Y Z".
+     *
+     * @param coordStr the string representing the coordinates
+     * @return the array of parsed coordinates
+     */
+    private static double[] parseCoordinates(String coordStr) {
+        return Arrays.stream(coordStr.split(" "))
+                .mapToDouble(Double::parseDouble)
+                .toArray();    }
+
+    /**
+     * Parses a color from a string in the format "R G B".
+     *
+     * @param rgb the string representing the color
+     * @return the parsed color
+     */
+    private static Color parseColor(String rgb) {
+        double[] colors = parseCoordinates(rgb);
+        return new Color(colors[0], colors[1], colors[2]);
+    }
+
+    /**
+     * Parses a vector from a string in the format "X Y Z".
+     * @param vector the string representing the vector
+     * @return the parsed vector
+     */
+    private static Vector parseVector(String vector) {
+        double[] coords = parseCoordinates(vector);
+        return new Vector(coords[0], coords[1], coords[2]);
     }
 
     /**
@@ -108,11 +169,8 @@ public class JsonScene {
      * @return the parsed point
      */
     private static Point parsePoint(String pointStr) {
-        String[] coords = pointStr.split(" ");
-        return new Point(
-                Double.parseDouble(coords[0]),
-                Double.parseDouble(coords[1]),
-                Double.parseDouble(coords[2])
-        );
+        double[] coords = parseCoordinates(pointStr);
+        return new Point(coords[0], coords[1], coords[2]);
     }
+
 }
