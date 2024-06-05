@@ -133,5 +133,4 @@ public class Tube extends RadialGeometry {
         // Return the list of intersection points, or null if there are none
         return intersections.isEmpty() ? null : intersections;
     }
-
 }

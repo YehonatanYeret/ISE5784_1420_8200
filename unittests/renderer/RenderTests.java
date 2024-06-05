@@ -2,7 +2,6 @@ package renderer;
 
 import static java.awt.Color.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +54,7 @@ public class RenderTests {
         //try to load a scene from a json file and render it
         //fail if the function throws
         assertDoesNotThrow(() -> {
-            Scene scene1 = JsonScene.importScene("images/test1.json", "Test scene");
+            Scene scene1 = JsonScene.importScene("jsonScenes/test1.json", "Test scene");
 
             camera
                     .setImageWriter(new ImageWriter("json render test", 1000, 1000))

@@ -66,11 +66,44 @@ public class JsonScene {
                 geometries.add(parsePolygon((JSONObject) geometryObj.get("polygon")));
             }else if (geometryObj.containsKey("plane")) {
                 geometries.add(parsePlane((JSONObject) geometryObj.get("plane")));
-            }else{
+            } else if (geometryObj.containsKey("cylinder")) {
+                geometries.add(parseCylinder((JSONObject) geometryObj.get("cylinder")));
+            } else if (geometryObj.containsKey("tube")) {
+                geometries.add(parseTube((JSONObject) geometryObj.get("tube")));
+            } else{
                 throw new IllegalArgumentException("Unknown geometry type");
             }
         }
         return geometries;
+    }
+
+    private static Geometry parseTube(JSONObject tube) {
+        double radius = ((Number) tube.get("radius")).doubleValue();
+        Ray axis = parseRay((JSONObject) tube.get("axis"));
+        return new Tube(axis, radius);
+    }
+
+    /**
+     * Parses a cylinder from a JSON object
+     * @param cylinder the JSON object representing a cylinder
+     * @return the parsed polygon
+     */
+    private static Geometry parseCylinder(JSONObject cylinder) {
+        double radius = ((Number)cylinder.get("radius")).doubleValue();
+        double height = ((Number)cylinder.get("height")).doubleValue();
+        Ray axis = parseRay((JSONObject) cylinder.get("axis"));
+        return new Cylinder(axis, radius, height);
+    }
+
+    /**
+     * Parses a ray from a JSON object.
+     * @param axis the JSON object representing a ray
+     * @return the parsed ray
+     */
+    private static Ray parseRay(JSONObject axis) {
+        Point point = parsePoint((String) axis.get("origin"));
+        Vector direction = parseVector((String) axis.get("direction"));
+        return new Ray(point, direction);
     }
 
     /**
@@ -139,7 +172,9 @@ public class JsonScene {
     private static double[] parseCoordinates(String coordStr) {
         return Arrays.stream(coordStr.split(" "))
                 .mapToDouble(Double::parseDouble)
-                .toArray();    }
+                .toArray();
+    }
+
 
     /**
      * Parses a color from a string in the format "R G B".

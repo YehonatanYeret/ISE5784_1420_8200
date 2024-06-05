@@ -11,6 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Class that represent the ray tracer
+ */
 public class RayIntersectionTest {
 
     private final Vector yAxis = new Vector(0, -1, 0);

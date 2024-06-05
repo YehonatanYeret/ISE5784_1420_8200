@@ -6,6 +6,9 @@ import primitives.Ray;
 import java.util.List;
 import java.util.LinkedList;
 
+/**
+ * Geometries class represents a collection of geometries
+ */
 public class Geometries implements Intersectable{
     private final List<Intersectable> geometries = new LinkedList<>();
 
