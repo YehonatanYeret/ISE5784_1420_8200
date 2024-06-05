@@ -39,8 +39,9 @@ public class Tube extends RadialGeometry {
         return point.subtract(this.axis.getPoint(t)).normalize();
     }
 
+
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         Vector rayDirection = ray.getDirection();
         Vector axisDirection = this.axis.getDirection();
         Point rayOrigin = ray.getPoint(0);
@@ -75,10 +76,10 @@ public class Tube extends RadialGeometry {
             // If the ray starts at the head of the axis
             if (dirDotAxis == 0) {
                 // Return intersection at distance radius if (D|V) is zero
-                return alignZero(t) <= 0 ? null : List.of(ray.getPoint(radius));
+                return alignZero(t) <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(radius)));
             } else {
                 // Return intersection at distance t otherwise
-                return alignZero(t) <= 0 ? null : List.of(ray.getPoint(t));
+                return alignZero(t) <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
             }
         }
 
@@ -96,7 +97,7 @@ public class Tube extends RadialGeometry {
                 deltaPMinusDPV = deltaP.subtract(deltaP_VV);
             } catch (IllegalArgumentException e1) {
                 // Return intersection at distance t if subtraction is not possible
-                return alignZero(t) <= 0 ? null : List.of(ray.getPoint(t));
+                return alignZero(t) <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
             }
         }
 
@@ -131,6 +132,6 @@ public class Tube extends RadialGeometry {
         }
 
         // Return the list of intersection points, or null if there are none
-        return intersections.isEmpty() ? null : intersections;
+        return intersections.isEmpty() ? null : intersections.stream().map(p -> new GeoPoint(this, p)).toList();
     }
 }

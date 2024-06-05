@@ -52,12 +52,13 @@ public class Cylinder extends Tube {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Initialize intersections list
         List<Point> intersections = new LinkedList<>();
 
         // Find intersections with the infinite cylinder
-        List<Point> infiniteCylinderIntersections = super.findIntersections(ray);
+        Tube tube = new Tube(axis, radius);
+        List<Point> infiniteCylinderIntersections = tube.findIntersections(ray);
         if (infiniteCylinderIntersections != null) {
             intersections.addAll(infiniteCylinderIntersections);
         }
@@ -77,8 +78,10 @@ public class Cylinder extends Tube {
         Plane topBase = new Plane(axis.getPoint(height), axis.getDirection());
 
         // Return intersections if there are exactly 2 (so they are on the sides of the cylinder)
-        if(intersections.size() == 2)
-            return intersections;
+        if (intersections.size() == 2) {
+            return List.of(new GeoPoint(this, intersections.get(0)), new GeoPoint(this, intersections.get(1)));
+        }
+
 
         // Find intersections with the bottom base
         List<Point> bottomBaseIntersections = bottomBase.findIntersections(ray);
@@ -99,15 +102,20 @@ public class Cylinder extends Tube {
         }
 
         // if the ray is tangent to the cylinder
-        if(intersections.size() == 2 && axis.getPoint(0).distanceSquared(intersections.get(0)) == radius* radius &&
-                axis.getPoint(height).distanceSquared(intersections.get(1)) == radius * radius){
+        if (intersections.size() == 2 && axis.getPoint(0).distanceSquared(intersections.get(0)) == radius * radius &&
+                axis.getPoint(height).distanceSquared(intersections.get(1)) == radius * radius) {
             Vector v = intersections.get(1).subtract(intersections.get(0));
-            if(v.normalize().equals(axis.getDirection()) || v.normalize().equals(axis.getDirection().scale(-1)))
+            if (v.normalize().equals(axis.getDirection()) || v.normalize().equals(axis.getDirection().scale(-1)))
                 return null;
         }
 
         // Return null if no valid intersections found
-        return intersections.isEmpty() ? null : intersections;
+        List<GeoPoint> geoPoints = new LinkedList<>();
+        for (Point p : intersections) {
+            geoPoints.add(new GeoPoint(this, p));
+        }
+
+        return geoPoints.isEmpty() ? null : geoPoints;
     }
 
 }

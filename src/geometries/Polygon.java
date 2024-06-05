@@ -14,7 +14,7 @@ import primitives.Vector;
  * system
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
    /** List of polygon's vertices */
    protected final List<Point> vertices;
    /** Associated plane in which the polygon lays */
@@ -85,7 +85,7 @@ public class Polygon implements Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
    @Override
-   public List<Point> findIntersections(Ray ray) {
+   public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
       // Initialize a list to hold the normals of the edges of the polygonal base
       List<Vector> normals = new LinkedList<>();
 
@@ -114,7 +114,9 @@ public class Polygon implements Geometry {
       }
 
       // Find and return the intersection points of the ray with the plane
-      return plane.findIntersections(ray);
+      List<Point> points = plane.findIntersections(ray);
+
+      return points == null ? null : List.of(new GeoPoint(this, points.getFirst()));
    }
 
 }

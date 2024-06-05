@@ -23,7 +23,7 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         Point p1 = vertices.get(0);
         Point p2 = vertices.get(1);
         Point p3 = vertices.get(2);
@@ -72,7 +72,7 @@ public class Triangle extends Polygon {
 
         // Check if the point is inside the triangle
         if (u > 0 && v > 0 && w > 0) {
-            return List.of(p);
+            return List.of(new GeoPoint(this, p));
         }
         return null;
     }
