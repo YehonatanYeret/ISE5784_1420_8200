@@ -61,9 +61,9 @@ public class JsonScene {
             if (geometryObj.containsKey("sphere")) {
                 geometries.add(parseSphere((JSONObject) geometryObj.get("sphere")));
             } else if (geometryObj.containsKey("triangle")) {
-                geometries.add(parseTriangle((JSONObject) geometryObj.get("triangle")));
+                geometries.add(parseTriangle((JSONArray) geometryObj.get("triangle")));
             }else if(geometryObj.containsKey("polygon")) {
-                geometries.add(parsePolygon((JSONObject) geometryObj.get("polygon")));
+                geometries.add(parsePolygon((JSONArray) geometryObj.get("polygon")));
             }else if (geometryObj.containsKey("plane")) {
                 geometries.add(parsePlane((JSONObject) geometryObj.get("plane")));
             } else if (geometryObj.containsKey("cylinder")) {
@@ -111,7 +111,7 @@ public class JsonScene {
      * @param polygon the JSON object representing a polygon
      * @return the parsed polygon
      */
-    private static Geometry parsePolygon(JSONObject polygon) {
+    private static Geometry parsePolygon(JSONArray polygon) {
         return new Polygon(parseVertices(polygon));
     }
 
@@ -133,7 +133,7 @@ public class JsonScene {
      * @param triangleObj the JSON object representing a triangle
      * @return the parsed triangle
      */
-    private static Polygon parseTriangle(JSONObject triangleObj) {
+    private static Polygon parseTriangle(JSONArray triangleObj) {
         Point[] points = parseVertices(triangleObj);
         return new Triangle(points[0], points[1], points[2]);
     }
@@ -151,14 +151,13 @@ public class JsonScene {
 
     /**
      * Parses an array of vertices from a JSON array.
-     * @param vertices the JSON object representing vertices
+     * @param vertices the JSON array representing vertices
      * @return the parsed array of vertices
      */
-    private static Point[] parseVertices(JSONObject vertices) {
-        JSONArray verticesArray = (JSONArray) vertices.get("vertices");
-        Point[] points = new Point[verticesArray.size()];
-        for (int i = 0; i < verticesArray.size(); i++) {
-            points[i] = parsePoint((String) verticesArray.get(i));
+    private static Point[] parseVertices(JSONArray vertices) {
+        Point[] points = new Point[vertices.size()];
+        for (int i = 0; i < vertices.size(); i++) {
+            points[i] = parsePoint((String) vertices.get(i));
         }
         return points;
     }
