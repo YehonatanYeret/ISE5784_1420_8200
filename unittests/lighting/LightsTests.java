@@ -1,11 +1,10 @@
-package renderer;
+package lighting;
 
 import static java.awt.Color.*;
 
 import org.junit.jupiter.api.Test;
 
 import geometries.*;
-import lighting.*;
 import primitives.*;
 import renderer.*;
 import scene.Scene;
@@ -194,4 +193,35 @@ public class LightsTests {
                 .writeToImage();
     }
 
+    /**
+     * Produce a picture of a sphere lighted by multi light
+     */
+    @Test
+    public void sphereMulti(){
+        scene1.geometries.add(sphere);
+        scene1.lights.add(new SpotLight(new Color(green), new Vector(0, 0, -1), new Point(20,0,50)).setKl(0.0001).setKq(0.000004));
+        scene1.lights.add(new PointLight(new Color(red), new Point(100,20,5)).setKl(0.0001).setKq(0.000002));
+        scene1.lights.add(new DirectionalLight(new Color(white), new Vector(1,-2,-1)));
+
+        camera1.setImageWriter(new ImageWriter("lightSphereMulti", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
+    /**
+     *  Produce a picture of two triangles lighted by multi light
+     */
+    @Test
+    public void triangleMulti(){
+        scene2.geometries.add(triangle1,triangle2);
+        scene2.lights.add(new SpotLight(new Color(green), new Vector(0, 0, -1), new Point(20,0,50)).setKl(0.0001).setKq(0.000004));
+        scene2.lights.add(new PointLight(new Color(red), new Point(-30,20,10)).setKl(0.0001).setKq(0.000002));
+        scene2.lights.add(new DirectionalLight(new Color(blue), new Vector(0,0,-1)));
+
+        camera2.setImageWriter(new ImageWriter("lightTriangleMulti", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
 }
