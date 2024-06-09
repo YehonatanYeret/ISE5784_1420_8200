@@ -12,9 +12,9 @@ public class PointLight extends Light implements LightSource{
      * position of the light source
      */
     protected Point position;
-    private double kC = 1;
-    private double kL = 0;
-    private double kQ = 0;
+    private double kC = 1d;
+    private double kL = 0d;
+    private double kQ = 0d;
 
     /**
      * get intensity of the light at a specific point
@@ -59,7 +59,7 @@ public class PointLight extends Light implements LightSource{
     @Override
     public Color getIntensity(Point point) {
         double d = position.distance(point);
-        return intensity.scale(1 / (kC + kL * d + kQ * d * d));
+        return intensity.scale(1d / (kC + kL * d + kQ * d * d));
     }
 
     @Override
