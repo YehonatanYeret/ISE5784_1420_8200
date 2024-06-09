@@ -11,8 +11,8 @@ import geometries.*;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -54,7 +54,7 @@ public class JsonScene {
      * @return the list of parsed geometries
      */
     private static List<Geometry> parseGeometries(JSONArray geometriesArray) {
-        List<Geometry> geometries = new ArrayList<>();
+        List<Geometry> geometries = new LinkedList<>();
         for (Object obj : geometriesArray) {
             JSONObject geometryObj = (JSONObject) obj;
 

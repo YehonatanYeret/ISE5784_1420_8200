@@ -11,6 +11,8 @@ public abstract class Geometry extends Intersectable {
      */
     protected Color emission = Color.BLACK;
 
+    private Material material = new Material();
+
     /**
      * The material of the geometry
      */
@@ -34,7 +36,22 @@ public abstract class Geometry extends Intersectable {
      * @return the normal to the geometry at the given point
      */
     public abstract Vector getNormal(Point point);
-//
-//    @Override
-//    List<Point> findIntersections(Ray ray);
+
+    /**
+     * Get the material of the geometry
+     * @return the material of the geometry
+     */
+    public Material getMaterial() {
+        return material;
+    }
+
+    /**
+     * Set the material of the geometry
+     * @param material the material to set
+     * @return the geometry
+     */
+    public Geometry setMaterial(Material material) {
+        this.material = material;
+        return this;
+    }
 }
