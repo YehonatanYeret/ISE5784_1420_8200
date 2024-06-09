@@ -3,6 +3,9 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+/**
+ * SpotLight class represents a light source with a specific position in the scene
+ */
 public class SpotLight extends PointLight{
     private Vector direction;
 
@@ -32,7 +35,7 @@ public class SpotLight extends PointLight{
      */
     public SpotLight(Color color, Vector direction, Point position) {
         super(color, position);
-        this.direction = direction;
+        this.direction = direction.normalize();
     }
 
     @Override

@@ -31,6 +31,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Color color = point.geometry.getEmission().add(scene.ambientLight.getIntensity()); // Ia * ka + Ie
         Vector n = point.geometry.getNormal(point.point);
 
+        //store the values of the material
         int nShininess = point.geometry.getMaterial().nShininess;
         Double3 kD = point.geometry.getMaterial().kD;
         Double3 kS = point.geometry.getMaterial().kS;
@@ -38,6 +39,7 @@ public class SimpleRayTracer extends RayTracerBase {
         double nv = Util.alignZero(n.dotProduct(direction));
         if (nv == 0) return Color.BLACK;
 
+        // Calculate the color of the point by adding the diffusive and specular components
         for (var lightSource : scene.lights) {
             Vector l = lightSource.getL(point.point).normalize();
             double nl = n.dotProduct(l);
@@ -53,13 +55,16 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color lightIntensity) {
+        //calculate the reflection vector
         Vector r = l.subtract(n.scale(2 * nl));
         double vr = Util.alignZero(v.scale(-1).dotProduct(r));
         if (vr <= 0) return Color.BLACK;
+        //calculate the specular component
         return lightIntensity.scale(ks.scale(Math.pow(vr, nShininess)));
     }
 
     private Color calcDiffusive(Double3 kd, double nl, Color lightIntensity) {
+        //calculate the diffusive component
         return lightIntensity.scale(kd.scale(Math.abs(nl)));
     }
 }
