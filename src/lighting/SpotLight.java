@@ -7,7 +7,7 @@ import primitives.Vector;
  * SpotLight class represents a light source with a specific position in the scene
  */
 public class SpotLight extends PointLight{
-    private Vector direction;
+    private final Vector direction;
 
     @Override
     public SpotLight setKc(double kC) {
@@ -41,6 +41,6 @@ public class SpotLight extends PointLight{
     @Override
     public Color getIntensity(Point point) {
         Color oldColor = super.getIntensity(point);
-        return oldColor.scale(Math.max(0, direction.dotProduct(getL(point))));
+        return oldColor.scale(Math.max(0d, direction.dotProduct(getL(point))));
     }
 }

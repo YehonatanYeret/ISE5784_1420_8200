@@ -29,7 +29,7 @@ public class Cylinder extends Tube {
 
     @Override
     public Vector getNormal(Point point) {
-        Point p0 = axis.getPoint(0);
+        Point p0 = axis.getPoint(0d);
         Vector dir = this.axis.getDirection();
 
         //  If p0 is the head of the axis
@@ -42,7 +42,7 @@ public class Cylinder extends Tube {
 
         // If the point is on the top or bottom surface of the cylinder
         if (Util.isZero(p0.subtract(point).dotProduct(dir)))
-            return dir.scale(-1);
+            return dir.scale(-1d);
 
         if (Util.isZero(axis.getPoint(height).subtract(point).dotProduct(dir)))
             return dir;
@@ -67,14 +67,14 @@ public class Cylinder extends Tube {
         Iterator<Point> iterator = intersections.iterator();
         while (iterator.hasNext()) {
             Point intersection = iterator.next();
-            double t = axis.getDirection().dotProduct(intersection.subtract(axis.getPoint(0)));
-            if (t <= 0 || t >= height) {
+            double t = axis.getDirection().dotProduct(intersection.subtract(axis.getPoint(0d)));
+            if (t <= 0d || t >= height) {
                 iterator.remove();
             }
         }
 
         // Define planes for the bottom and top bases
-        Plane bottomBase = new Plane(axis.getPoint(0), axis.getDirection());
+        Plane bottomBase = new Plane(axis.getPoint(0d), axis.getDirection());
         Plane topBase = new Plane(axis.getPoint(height), axis.getDirection());
 
         // Return intersections if there are exactly 2 (so they are on the sides of the cylinder)
@@ -87,7 +87,7 @@ public class Cylinder extends Tube {
         List<Point> bottomBaseIntersections = bottomBase.findIntersections(ray);
         if (bottomBaseIntersections != null) {
             Point intersection = bottomBaseIntersections.getFirst();
-            if (axis.getPoint(0).distanceSquared(intersection) <= radius * radius) {
+            if (axis.getPoint(0d).distanceSquared(intersection) <= radius * radius) {
                 intersections.add(intersection);
             }
         }
@@ -105,7 +105,7 @@ public class Cylinder extends Tube {
         if (intersections.size() == 2 && axis.getPoint(0).distanceSquared(intersections.get(0)) == radius * radius &&
                 axis.getPoint(height).distanceSquared(intersections.get(1)) == radius * radius) {
             Vector v = intersections.get(1).subtract(intersections.get(0));
-            if (v.normalize().equals(axis.getDirection()) || v.normalize().equals(axis.getDirection().scale(-1)))
+            if (v.normalize().equals(axis.getDirection()) || v.normalize().equals(axis.getDirection().scale(-1d)))
                 return null;
         }
 

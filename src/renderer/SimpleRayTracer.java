@@ -4,8 +4,6 @@ import geometries.Intersectable.GeoPoint;
 import primitives.*;
 import scene.Scene;
 
-import java.util.List;
-
 /**
  * SimpleRayTracer class is the basic class for ray tracing
  */
@@ -37,14 +35,14 @@ public class SimpleRayTracer extends RayTracerBase {
         Double3 kS = point.geometry.getMaterial().kS;
 
         double nv = Util.alignZero(n.dotProduct(direction));
-        if (nv == 0) return Color.BLACK;
+        if (nv == 0d) return Color.BLACK;
 
         // Calculate the color of the point by adding the diffusive and specular components
         for (var lightSource : scene.lights) {
             Vector l = lightSource.getL(point.point).normalize();
             double nl = n.dotProduct(l);
 
-            if (Util.alignZero(nl * nv) > 0) { // Only if nl and nv have the same sign
+            if (Util.alignZero(nl * nv) > 0d) { // Only if nl and nv have the same sign
                 Color lightIntensity = lightSource.getIntensity(point.point);
                 color = color.add(calcDiffusive(kD, nl, lightIntensity))
                         .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
@@ -56,9 +54,9 @@ public class SimpleRayTracer extends RayTracerBase {
 
     private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color lightIntensity) {
         //calculate the reflection vector
-        Vector r = l.subtract(n.scale(2 * nl));
-        double vr = Util.alignZero(v.scale(-1).dotProduct(r));
-        if (vr <= 0) return Color.BLACK;
+        Vector r = l.subtract(n.scale(2d * nl));
+        double vr = Util.alignZero(v.scale(-1d).dotProduct(r));
+        if (vr <= 0d) return Color.BLACK;
         //calculate the specular component
         return lightIntensity.scale(ks.scale(Math.pow(vr, nShininess)));
     }
