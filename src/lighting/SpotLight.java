@@ -28,6 +28,11 @@ public class SpotLight extends PointLight{
         return this;
     }
 
+    /**
+     * set the narrow beam of the light
+     * @param narrowBeam the narrow beam of the light
+     * @return the light source
+     */
     public SpotLight setNarrowBeam(double narrowBeam) {
         this.narrowBeam = narrowBeam;
         return this;
