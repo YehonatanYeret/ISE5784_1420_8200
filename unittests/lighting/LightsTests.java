@@ -233,25 +233,9 @@ public class LightsTests {
         scene1.geometries.add(sphere);
         scene1.lights
                 .add(new SpotLight(sphereLightColor, new Vector(1, 1, -0.5), sphereLightPosition)
-                        .setKl(0.001).setKq(0.00004));
-
-        camera1.setImageWriter(new ImageWriter("lightSphereSpotSharp", 500, 500))
-                .build()
-                .renderImage()
-                .writeToImage();
-    }
-
-    /**
-     * Produce a picture of a sphere lighted by a narrow spotlight with narrow beam
-     */
-    @Test
-    public void sphereSpotSharpNarrowBeam() {
-        scene1.geometries.add(sphere);
-        scene1.lights
-                .add(new SpotLight(sphereLightColor, new Vector(1, 1, -0.5), sphereLightPosition)
                         .setKl(0.001).setKq(0.00004).setNarrowBeam(10));
 
-        camera1.setImageWriter(new ImageWriter("lightSphereSpotSharpNarrowBeam", 500, 500))
+        camera1.setImageWriter(new ImageWriter("lightSphereSpotSharp", 500, 500))
                 .build()
                 .renderImage()
                 .writeToImage();
@@ -264,24 +248,9 @@ public class LightsTests {
     public void trianglesSpotSharp() {
         scene2.geometries.add(triangle1, triangle2);
         scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightDirection, trianglesLightPosition)
-                .setKl(0.001).setKq(0.00004));
-
-        camera2.setImageWriter(new ImageWriter("lightTrianglesSpotSharp", 500, 500))
-                .build()
-                .renderImage()
-                .writeToImage();
-    }
-
-    /**
-     * Produce a picture of two triangles lighted by a narrow spotlight with narrow beam
-     */
-    @Test
-    public void trianglesSpotSharpNarrowBeam() {
-        scene2.geometries.add(triangle1, triangle2);
-        scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightDirection, trianglesLightPosition)
                 .setKl(0.001).setKq(0.00004).setNarrowBeam(10));
 
-        camera2.setImageWriter(new ImageWriter("lightTrianglesSpotSharpNarrowBeam", 500, 500))
+        camera2.setImageWriter(new ImageWriter("lightTrianglesSpotSharp", 500, 500))
                 .build()
                 .renderImage()
                 .writeToImage();

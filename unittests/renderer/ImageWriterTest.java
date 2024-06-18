@@ -21,6 +21,7 @@ class ImageWriterTest {
                         imageWriter.writePixel(i, j, yellow);
                     }
                 }
+                imageWriter.writeToImage();
             }
         }, "Failed to create image");
     }

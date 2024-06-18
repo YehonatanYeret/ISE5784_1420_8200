@@ -42,7 +42,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = lightSource.getL(point.point).normalize();
             double nl = n.dotProduct(l);
 
-            if (Util.alignZero(nl * nv) > 0d) { // Only if nl and nv have the same sign
+            if (Util.alignZero(nl * nv) > 0) { // Only if nl and nv have the same sign
                 Color lightIntensity = lightSource.getIntensity(point.point);
                 color = color.add(calcDiffusive(kD, nl, lightIntensity))
                         .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));

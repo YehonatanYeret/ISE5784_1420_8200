@@ -86,14 +86,14 @@ public class RenderTests {
         //try to load a scene from a json file and render it
         //fail if the function throws
         assertDoesNotThrow(() -> {
-            Scene scene1 = JsonScene.importScene("jsonScenes/test1.json", "Test scene");
+            Scene scene1 = JsonScene.importScene("jsonScenes/test1.json");
 
             camera
-                    .setImageWriter(new ImageWriter("json render test", 1000, 1000))
+                    .setImageWriter(new ImageWriter("json render test", 500, 500))
                     .setRayTracer(new SimpleRayTracer(scene1))
                     .build()
                     .renderImage()
-                    .printGrid(100, new Color(YELLOW))
+//                    .printGrid(100, new Color(YELLOW))
                     .writeToImage();
 
         }, "Failed to render image");
