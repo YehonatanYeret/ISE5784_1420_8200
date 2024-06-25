@@ -42,7 +42,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = lightSource.getL(point.point).normalize();
             double nl = n.dotProduct(l);
 
-            if (Util.alignZero(nl * nv) > 0) { // Only if nl and nv have the same sign
+            if (Util.alignZero(nl * nv) > 0 && unshaded(point, l)) { // Only if nl and nv have the same sign
                 Color lightIntensity = lightSource.getIntensity(point.point);
                 color = color.add(calcDiffusive(kD, nl, lightIntensity))
                         .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
@@ -52,10 +52,16 @@ public class SimpleRayTracer extends RayTracerBase {
         return color;
     }
 
+    private boolean unshaded(GeoPoint point, Vector l) {
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(point.point, lightDirection);
+        var intersections = scene.geometries.findGeoIntersections(lightRay);
+        return intersections == null;
+    }
+
     private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color lightIntensity) {
         //calculate the reflection vector
-        Vector r = l.subtract(n.scale(2d * nl));
-        double vr = Util.alignZero(v.scale(-1d).dotProduct(r));
+        double vr = Util.alignZero(v.scale(-1d).dotProduct(l.subtract(n.scale(2d * nl))));
         if (vr <= 0d) return Color.BLACK;
         //calculate the specular component
         return lightIntensity.scale(ks.scale(Math.pow(vr, nShininess)));

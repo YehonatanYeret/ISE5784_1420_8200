@@ -86,6 +86,10 @@ public class Polygon extends Geometry {
 
    @Override
    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+      // Find and return the intersection points of the ray with the plane
+      List<Point> points = plane.findIntersections(ray);
+      if(points == null) return null;
+
       // Initialize a list to hold the normals of the edges of the polygonal base
       List<Vector> normals = new LinkedList<>();
 
@@ -112,11 +116,7 @@ public class Polygon extends Geometry {
             return null;
          }
       }
-
-      // Find and return the intersection points of the ray with the plane
-      List<Point> points = plane.findIntersections(ray);
-
-      return points == null ? null : List.of(new GeoPoint(this, points.getFirst()));
+      return List.of(new GeoPoint(this, points.getFirst()));
    }
 
 }
