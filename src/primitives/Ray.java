@@ -38,10 +38,9 @@ public class Ray {
         if (Util.isZero(nv))
             this.head = head;
 
-        else {
-            Vector delta = normal.scale(nv > 0 ? DELTA : -DELTA);
-            this.head = head.add(delta);
-        }
+        else
+            this.head = head.add(normal.scale(nv > 0 ? DELTA : -DELTA));
+
     }
 
     @Override
