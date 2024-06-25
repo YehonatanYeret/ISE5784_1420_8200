@@ -41,7 +41,7 @@ public class Tube extends RadialGeometry {
 
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         Vector rayDirection = ray.getDirection();
         Vector axisDirection = this.axis.getDirection();
         Point rayOrigin = ray.getPoint(0d);
@@ -76,10 +76,10 @@ public class Tube extends RadialGeometry {
             // If the ray starts at the head of the axis
             if (dirDotAxis == 0d) {
                 // Return intersection at distance radius if (D|V) is zero
-                return t <= 0d ? null : List.of(new GeoPoint(this, ray.getPoint(radius)));
+                return (t <= 0 || alignZero(t - maxDistance) > 0d) ? null : List.of(new GeoPoint(this, ray.getPoint(radius)));
             } else {
                 // Return intersection at distance t otherwise
-                return t <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
+                return (t <= 0d || alignZero(t - maxDistance) > 0d) ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
             }
         }
 
@@ -97,7 +97,7 @@ public class Tube extends RadialGeometry {
                 deltaPMinusDPV = deltaP.subtract(deltaP_VV);
             } catch (IllegalArgumentException e1) {
                 // Return intersection at distance t if subtraction is not possible
-                return t <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
+                return (t <= 0 || alignZero(t - maxDistance) > 0d) ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
             }
         }
 
@@ -123,11 +123,11 @@ public class Tube extends RadialGeometry {
         double t1 = alignZero((-B - discriminantSqrt) / (2 * A));
         double t2 = alignZero((-B + discriminantSqrt) / (2 * A));
 
-        if (t1 > 0d) {
+        if (t1 > 0d && alignZero(t1 - maxDistance) <= 0d) {
             intersections.add(ray.getPoint(t1));
         }
 
-        if (t2 > 0d) {
+        if (t2 > 0d && alignZero(t2 - maxDistance) <= 0d) {
             intersections.add(ray.getPoint(t2));
         }
 

@@ -29,4 +29,9 @@ public class DirectionalLight extends Light implements LightSource{
     public Color getIntensity(Point point) {
         return intensity;
     }
+
+    @Override
+    public double getDistance(Point point) {
+        return Double.POSITIVE_INFINITY;
+    }
 }

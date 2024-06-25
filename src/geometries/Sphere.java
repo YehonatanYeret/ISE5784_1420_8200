@@ -7,6 +7,8 @@ import primitives.Util;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * Class Sphere is the basic class representing a sphere in the 3D space
  */
@@ -31,7 +33,7 @@ public class Sphere extends RadialGeometry {
 
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         Point p0 = ray.getPoint(0);
         Vector dir = ray.getDirection();
 
@@ -50,13 +52,13 @@ public class Sphere extends RadialGeometry {
         double t2 = Util.alignZero(tm + th);
 
         // if the ray starts before the sphere
-        if (t1 > 0 && t2 > 0)
+        if (t1 > 0 && t2 > 0 && alignZero(t1 - maxDistance) <= 0d && alignZero(t2 - maxDistance) <= 0d)
             return List.of(new GeoPoint(this,ray.getPoint(t1)),new GeoPoint(this, ray.getPoint(t2)));
 
         // if the ray starts inside the sphere
-        if (t1 > 0)
+        if (t1 > 0 && alignZero(t1 - maxDistance) <= 0d)
             return List.of(new GeoPoint(this,ray.getPoint(t1)));
-        if (t2 > 0)
+        if (t2 > 0 && alignZero(t2 - maxDistance) <= 0d)
             return List.of(new GeoPoint(this,ray.getPoint(t2)));
 
         return null;

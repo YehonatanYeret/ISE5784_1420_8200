@@ -7,6 +7,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * Class Plane is the basic class representing a plane in the 3D space
  */
@@ -56,9 +58,9 @@ public class Plane extends Geometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         Vector direction = ray.getDirection();
-        Point p0 = ray.getPoint(0);
+        Point p0 = ray.getPoint(0d);
         // if the ray is parallel to the plane or the ray starts on the plane at the point q
         if (Util.isZero(direction.dotProduct(normal)) || q.equals(p0))
             return null;
@@ -66,6 +68,6 @@ public class Plane extends Geometry {
         // calculate the intersection point
         double t = normal.dotProduct(q.subtract(p0)) / normal.dotProduct(direction);
 
-        return Util.alignZero(t) <= 0 ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
+        return Util.alignZero(t) <= 0d || alignZero(t - maxDistance) > 0d ? null : List.of(new GeoPoint(this, ray.getPoint(t)));
     }
 }

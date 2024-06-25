@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * Class Cylinder is the basic class representing a cylinder in the 3D space.
  */
@@ -52,7 +54,7 @@ public class Cylinder extends Tube {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // Initialize intersections list
         List<Point> intersections = new LinkedList<>();
 
@@ -85,7 +87,7 @@ public class Cylinder extends Tube {
 
         // Find intersections with the bottom base
         List<Point> bottomBaseIntersections = bottomBase.findIntersections(ray);
-        if (bottomBaseIntersections != null) {
+        if (bottomBaseIntersections != null && alignZero(bottomBaseIntersections.getFirst().distanceSquared(ray.getPoint(0)) - maxDistance) <= 0d) {
             Point intersection = bottomBaseIntersections.getFirst();
             if (axis.getPoint(0d).distanceSquared(intersection) <= radius * radius) {
                 intersections.add(intersection);
@@ -94,7 +96,7 @@ public class Cylinder extends Tube {
 
         // Find intersections with the top base
         List<Point> topBaseIntersections = topBase.findIntersections(ray);
-        if (topBaseIntersections != null) {
+        if (topBaseIntersections != null && alignZero(topBaseIntersections.getFirst().distanceSquared(ray.getPoint(0)) - maxDistance) <= 0d) {
             Point intersection = topBaseIntersections.getFirst();
             if (axis.getPoint(height).distanceSquared(intersection) <= radius * radius) {
                 intersections.add(intersection);
