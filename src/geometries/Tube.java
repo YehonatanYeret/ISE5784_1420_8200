@@ -41,7 +41,7 @@ public class Tube extends RadialGeometry {
 
 
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         Vector rayDirection = ray.getDirection();
         Vector axisDirection = this.axis.getDirection();
         Point rayOrigin = ray.getPoint(0d);

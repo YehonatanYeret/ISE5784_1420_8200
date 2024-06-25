@@ -51,8 +51,8 @@ public class Cylinder extends Tube {
         return super.getNormal(point);
     }
 
-        @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Initialize intersections list
         List<Point> intersections = new LinkedList<>();
 

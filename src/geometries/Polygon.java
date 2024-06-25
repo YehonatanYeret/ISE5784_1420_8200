@@ -85,7 +85,7 @@ public class Polygon extends Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
    @Override
-   public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
       // Initialize a list to hold the normals of the edges of the polygonal base
       List<Vector> normals = new LinkedList<>();
 
