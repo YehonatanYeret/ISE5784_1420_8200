@@ -18,6 +18,56 @@ public class Material {
     public int nShininess = 0;
 
     /**
+     * kR is the reflection factor
+     */
+    public Double3 kR = Double3.ZERO;
+
+    /**
+     * kT is the transparency factor
+     */
+    public Double3 kT = Double3.ZERO;
+
+    /**
+     * setter for transparency factor
+     * @param kt the transparency factor
+     * @return the material
+     */
+    public  Material setKt(Double3 kt){
+        this.kT = kt;
+        return this;
+    }
+
+    /**
+     * setter for transparency factor
+     * @param kt the transparency factor
+     * @return the material
+     */
+    public Material setKt(double kt){
+        this.kT = new Double3(kt);
+        return this;
+    }
+
+    /**
+     * setter for reflection factor
+     * @param kr the reflection factor
+     * @return the material
+     */
+    public  Material setKr(Double3 kr){
+        this.kR = kr;
+        return this;
+    }
+
+    /**
+     * setter for reflection factor
+     * @param kr the reflection factor
+     * @return the material
+     */
+    public Material setKr(double kr){
+        this.kR = new Double3(kr);
+        return this;
+    }
+
+    /**
      * Constructor for Material
      * @param kD the diffuse factor
      * @return the material

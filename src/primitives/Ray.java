@@ -11,15 +11,37 @@ import java.util.List;
 public class Ray {
     private final Point head;
     private final Vector direction;
+    private static final double DELTA = 0.1;
 
     /**
      * Constructor to initialize a ray based on a head point and a direction vector
-     * @param head head point
+     *
+     * @param head      head point
      * @param direction direction vector
      */
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
+    }
+
+    /**
+     * Constructor to initialize a ray based on a head point, a direction vector and a normal vector
+     *
+     * @param head      head point
+     * @param direction direction vector
+     * @param normal    normal vector
+     */
+    public Ray(Point head, Vector direction, Vector normal) {
+        this.direction = direction.normalize();
+        double nv = normal.dotProduct(direction);
+
+        if (Util.isZero(nv))
+            this.head = head;
+
+        else {
+            Vector delta = normal.scale(nv > 0 ? DELTA : -DELTA);
+            this.head = head.add(delta);
+        }
     }
 
     @Override
@@ -32,12 +54,13 @@ public class Ray {
 
     /**
      * Getter for the point on the ray at a certain distance from the head
+     *
      * @param t the distance from the head
      * @return the point on the ray at the distance t from the head
      */
     public Point getPoint(double t) {
         // if t is zero, return the head point
-        if(Util.isZero(t))
+        if (Util.isZero(t))
             return head;
         return head.add(direction.scale(t));
     }
@@ -50,6 +73,7 @@ public class Ray {
 
     /**
      * Getter for the head point of the ray
+     *
      * @return the head point of the ray
      */
     public Vector getDirection() {
@@ -57,7 +81,8 @@ public class Ray {
     }
 
     /**
-     *  method to find the closest point to the head of the ray
+     * method to find the closest point to the head of the ray
+     *
      * @param points list of points
      * @return the closest point to the head of the ray
      */
@@ -66,8 +91,9 @@ public class Ray {
                 : findClosestGeoPoint(points.stream().map(p -> new GeoPoint(null, p)).toList()).point;
     }
 
-     /**
-     *  method to find the closest point to the head of the ray
+    /**
+     * method to find the closest point to the head of the ray
+     *
      * @param points list of geo points
      * @return the closest point to the head of the ray
      */
