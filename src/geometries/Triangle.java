@@ -71,7 +71,7 @@ public class Triangle extends Polygon {
         double w = Util.alignZero(1d - u - v);
 
         // Check if the point is inside the triangle
-        if (u > 0d && v > 0d && w > 0d && Util.alignZero(ray.getPoint(0).distanceSquared(p)) <= maxDistance) {
+        if (u > 0d && v > 0d && w > 0d && Util.alignZero(ray.getPoint(0).distanceSquared(p)) <= maxDistance* maxDistance) {
             return List.of(new GeoPoint(this, p));
         }
         return null;

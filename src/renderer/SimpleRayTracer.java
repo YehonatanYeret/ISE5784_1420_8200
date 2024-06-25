@@ -1,6 +1,7 @@
 package renderer;
 
 import geometries.Intersectable.GeoPoint;
+import geometries.Triangle;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
@@ -50,7 +51,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = lightSource.getL(point).normalize();
             double nl = n.dotProduct(l);
 
-            if (Util.alignZero(nl * nv) > 0 && unshaded(geoPoint, l, geoPoint.geometry.getNormal(geoPoint.point), nl)) { // Only if nl and nv have the same sign
+            if (nl * nv > 0 && unshaded(geoPoint, lightSource, l, n, nl)) {
                 Color lightIntensity = lightSource.getIntensity(geoPoint.point);
                 color = color.add(calcDiffusive(kD, nl, lightIntensity))
                         .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
@@ -74,14 +75,10 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     private boolean unshaded(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nl) {
-        Vector delta = n.scale(n.dotProduct(l) > 0 ? DELTA : -DELTA);
-        Point point = gp.point.add(delta);
-//        Ray shadowRay = new Ray(point, l);
-//        var intersections = scene.geometries.findGeoIntersections(shadowRay);
-//        if (intersections == null) return true;
-//        return intersections.isEmpty();
-        Ray shadowRay = new Ray(point, lightSource.getL(point));
-        var intersections = scene.geometries.findGeoIntersections(shadowRay, lightSource.getDistance(point));
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Vector delta = n.scale(nl<0?DELTA:-DELTA);
+        Ray lightRay = new Ray(gp.point.add(delta), lightDirection);
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
         return intersections == null;
     }
 }
