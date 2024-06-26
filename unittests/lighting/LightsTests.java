@@ -278,6 +278,7 @@ public class LightsTests {
     @Test
     public void triangleMulti() {
         scene2.geometries.add(triangle1, triangle2);
+
         scene2.lights.add(new SpotLight(new Color(green), new Vector(0, 0, -1), new Point(20, 0, 50)).setKl(0.0001).setKq(0.000004));
         scene2.lights.add(new PointLight(new Color(red), new Point(-30, 20, 10)).setKl(0.0001).setKq(0.000002));
         scene2.lights.add(new DirectionalLight(new Color(blue), new Vector(0, 0, -1)));

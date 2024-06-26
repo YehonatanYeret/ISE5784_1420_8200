@@ -33,15 +33,16 @@ public class Ray {
      */
     public Ray(Point head, Vector direction, Vector normal) {
         this.direction = direction.normalize();
-        double nv = normal.dotProduct(direction);
+        double nv = normal.dotProduct(this.direction);
 
-        if (Util.isZero(nv))
-            this.head = head;
-
-        else
+        // Add a small delta to the ray's origin to avoid floating-point precision issues
+        if (!Util.isZero(nv)) {
             this.head = head.add(normal.scale(nv > 0 ? DELTA : -DELTA));
-
+        } else {
+            this.head = head;
+        }
     }
+
 
     @Override
     public boolean equals(Object obj) {

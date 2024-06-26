@@ -55,7 +55,7 @@ public class ShadowTests {
     /** Sphere-Triangle shading - move triangle up-right */
     @Test
     public void sphereTriangleMove1() {
-        sphereTriangleHelper("shadowSphereTriangleMove1", //
+        sphereTriangleHelper("shadowSphereTriangleMove1",
                 new Triangle(new Point(-60, -30, 0), new Point(-30, -60, 0), new Point(-58, -58, -4)), //
                 new Point(-100, -100, 200));
     }

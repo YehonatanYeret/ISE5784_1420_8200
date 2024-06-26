@@ -1,6 +1,7 @@
 package renderer;
 
 import geometries.Intersectable.GeoPoint;
+import geometries.Triangle;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
@@ -75,20 +76,34 @@ public class SimpleRayTracer extends RayTracerBase {
     private Color calcGlobalEffects(GeoPoint gp, Ray ray, int level, Double3 k) {
         Material material = gp.geometry.getMaterial();
         return calcGlobalEffect(constractReflectedRay(gp, ray), material.kR, level, k)
-                .add(calcGlobalEffect(constractReflectedRay(gp, ray), material.kT, level, k));
+                .add(calcGlobalEffect(constractRefractedRay(gp, ray), material.kT, level, k));
+    }
+
+    private Ray constractRefractedRay(GeoPoint gp, Ray ray) {
+        return new Ray(gp.point, ray.getDirection(), gp.geometry.getNormal(gp.point));
     }
 
     private Ray constractReflectedRay(GeoPoint gp, Ray ray) {
-        double nv = Util.alignZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDirection()));
-        Vector r = ray.getDirection().subtract(gp.geometry.getNormal(gp.point).scale(2 * nv));
-        return new Ray(gp.point, gp.geometry.getNormal(gp.point), r);
+        Vector v = ray.getDirection();
+        Vector n = gp.geometry.getNormal(gp.point);
+        double vn = v.dotProduct(n);
+
+        // Ensure the normal vector is correctly oriented
+        if (vn > 0) {
+            n = n.scale(-1);
+            vn = -vn;
+        }
+
+        Vector r = v.subtract(n.scale(2 * vn));
+
+        return new Ray(gp.point, r, n);
     }
 
     private Color calcGlobalEffect(Ray ray, Double3 kx, int level, Double3 k) {
         Double3 kkx = kx.product(k);
         if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
         GeoPoint gp = findClosestIntersection(ray);
-        return gp == null ? scene.background.scale(kx) : calcColor(gp, ray, level - 1, kkx).scale(kx);
+        return gp == null ? scene.background : calcColor(gp, ray, level - 1, kkx).scale(kx);
     }
 
     private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color lightIntensity) {

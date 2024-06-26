@@ -37,8 +37,8 @@ public class Triangle extends Polygon {
             return null; // The ray is parallel to the plane of the triangle
         }
 
-        double t = Util.alignZero(n.dotProduct(p1.subtract(ray.getPoint(0d))) / nd);
-        if (t < 0d) {
+        double t = n.dotProduct(p1.subtract(ray.getPoint(0))) / nd;
+        if (t < 0) {
             return null; // The intersection is behind the ray's origin
         }
 
@@ -65,13 +65,13 @@ public class Triangle extends Polygon {
         double dot11 = ac.dotProduct(ac);
         double dot12 = ac.dotProduct(ap);
 
-        double invDenom = Util.alignZero(1d / (dot00 * dot11 - dot01 * dot01));
-        double u = Util.alignZero((dot11 * dot02 - dot01 * dot12) * invDenom);
-        double v = Util.alignZero((dot00 * dot12 - dot01 * dot02) * invDenom);
-        double w = Util.alignZero(1d - u - v);
+        double invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+        double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        double v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+        double w = 1.0 - u - v;
 
         // Check if the point is inside the triangle
-        if (u > 0d && v > 0d && w > 0d && Util.alignZero(ray.getPoint(0).distanceSquared(p)) <= maxDistance* maxDistance) {
+        if (Util.alignZero(u) > 0 && Util.alignZero(v) > 0 && Util.alignZero(w) > 0 && Util.alignZero(p.distanceSquared(ray.getPoint(0)) - maxDistance*maxDistance)<=0) {
             return List.of(new GeoPoint(this, p));
         }
         return null;
