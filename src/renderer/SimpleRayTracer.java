@@ -8,6 +8,8 @@ import scene.Scene;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * SimpleRayTracer class is the basic class for ray tracing
  */
@@ -39,11 +41,11 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
     private Color calcColor(GeoPoint geoPoint, Ray ray, int level, Double3 k) {
-        Color color = calcLocalEffects(geoPoint, ray);
+        Color color = calcLocalEffects(geoPoint, ray, k);
         return level == 1 ? color : color.add(calcGlobalEffects(geoPoint, ray, level, k));
     }
 
-    private Color calcLocalEffects(GeoPoint geoPoint, Ray ray) {
+    private Color calcLocalEffects(GeoPoint geoPoint, Ray ray, Double3 k) {
         Vector n = geoPoint.geometry.getNormal(geoPoint.point);
         Vector direction = ray.getDirection();
 
@@ -64,10 +66,13 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = lightSource.getL(point).normalize();
             double nl = n.dotProduct(l);
 
-            if (nl * nv > 0d && unshaded(geoPoint, lightSource, l, n, nl)) {
-                Color lightIntensity = lightSource.getIntensity(geoPoint.point);
-                color = color.add(calcDiffusive(kD, nl, lightIntensity))
-                        .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
+            if (nl * nv > 0d) {
+                Double3 ktr = transparency(geoPoint, lightSource, l, n);
+                if(ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
+                    Color lightIntensity = lightSource.getIntensity(point).scale(ktr);
+                    color = color.add(calcDiffusive(kD, nl, lightIntensity))
+                            .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
+                }
             }
         }
         return color;
@@ -120,27 +125,42 @@ public class SimpleRayTracer extends RayTracerBase {
         return lightIntensity.scale(kd.scale(Math.abs(nl)));
     }
 
-    private boolean unshaded(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nl) {
-        Vector lightDirection = l.scale(-1); // from point to light source
-        Vector delta = n.scale(nl < 0 ? DELTA : -DELTA);
-        Ray lightRay = new Ray(gp.point.add(delta), lightDirection);
-        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
-
-
-        if (intersections == null)
-            return true;
-
-        for(GeoPoint point : intersections){
-            if (point.geometry.getMaterial().kT.equals(Double3.ZERO))
-                return false;
-        }
-        return true;
-
-    }
+//    private boolean unshaded(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nl) {
+//        Ray lightRay = new Ray(gp.point, l.scale(-1), n);
+//        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
+//
+//
+//        if (intersections == null)
+//            return true;
+//
+//        for(GeoPoint point : intersections){
+//            if (point.geometry.getMaterial().kT.equals(Double3.ZERO))
+//                return false;
+//        }
+//        return true;
+//
+//    }
 
     private GeoPoint findClosestIntersection(Ray ray) {
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
         if (intersections == null) return null;
         return ray.findClosestGeoPoint(intersections);
+    }
+
+    private Double3 transparency(GeoPoint geoPoint, LightSource ls, Vector l, Vector n){
+        Ray lightRay = new Ray(geoPoint.point, l.scale(-1), n);
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, ls.getDistance(geoPoint.point));
+        if (intersections == null) return Double3.ONE;
+
+        Double3 ktr = Double3.ONE;
+        for (GeoPoint gp : intersections) {
+            ktr = ktr.product(gp.geometry.getMaterial().kT);
+
+            // If the intensity of the light ray is too small, the object is opaque
+            if (ktr.lowerThan(MIN_CALC_COLOR_K)) return Double3.ZERO;
+        }
+        return ktr;
+
+
     }
 }
