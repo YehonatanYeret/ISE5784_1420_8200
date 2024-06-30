@@ -16,6 +16,7 @@ class TriangleTest {
     private final Point p1 = new Point(0, 0, 1);
     private final Point p2 = new Point(0, 1, 0);
     private final Point p3 = new Point(1, 0, 0);
+    private final Triangle triangle = new Triangle(new Point(1, 1, 0), p3, p2);
 
 
     /**
@@ -23,7 +24,6 @@ class TriangleTest {
      */
     @Test
     void testFindIntersections() {
-        Triangle triangle = new Triangle(new Point(1, 1, 0), p3, p2);
         // ============ Equivalence Partitions Tests ==============
         // TC01: the intersection point is inside the triangle
         assertEquals(1, triangle.findIntersections(
@@ -102,5 +102,21 @@ class TriangleTest {
                 () -> new Polygon(p1, p3, p2, p2),
                 "Constructed a polygon with vertices on a side");
 
+    }
+
+    /**
+     * Test method for {@link geometries.Triangle#findGeoIntersections(Ray, double)}.
+     */
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The distance between the ray intersection point and the ray's start point is more than the distance(0 points)
+        assertNull(triangle.findGeoIntersections(
+                new Ray(new Point(1.8, 1.8, 1), new Vector(-1, -1, -1)), 1),
+                "Ray's intersection point is out of the distance");
+
+        // TC02: The distance between the ray intersection point and the ray's start point is less than the distance(1 point)
+        assertEquals(1,triangle.findGeoIntersections(new Ray(new Point(1.8, 1.8, 1), new Vector(-1, -1, -1)), 10).size(),
+                "Ray's intersection points is in the distance");
     }
 }

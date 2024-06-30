@@ -312,4 +312,19 @@ class TubeTests {
         result = tube2.findIntersections(ray);
         assertNull(result, "Bad intersections");
     }
+
+    /**
+     * Test method for {@link geometries.Tube#findGeoIntersections(primitives.Ray, double)}.
+     */
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The distance between the ray intersection point and the ray's start point is more than the distance(0 points)
+        assertNull(tube.findGeoIntersections(new Ray(new Point(3, 0, 0.5), new Vector(-1, 0, 0)), 1),
+                "Ray's intersection point is out of the distance");
+
+        // TC02: The distance between the ray intersection point and the ray's start point is less than the distance(2 points)
+        assertEquals(2, tube.findGeoIntersections(new Ray(new Point(3, 0, 0.5), new Vector(-1, 0, 0)), 10).size(),
+                "Ray's intersection points is in the distance");
+    }
 }

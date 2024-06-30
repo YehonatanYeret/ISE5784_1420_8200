@@ -25,6 +25,7 @@ class SphereTests {
     private final Point p5 = new Point(0, 0.5, 1);
     private final Point p7 = new Point(0, sqrt075, 1.5);
     private final Point p8 = new Point(0, 0, 1);
+    private final Sphere sphere = new Sphere(1, p8);
 
 
     /**
@@ -56,8 +57,6 @@ class SphereTests {
      */
     @Test
     void testFindIntersections() {
-        Sphere sphere = new Sphere(1, p8);
-
         // ============ Equivalence Partitions Tests ==============
         // TC01 The ray start inside the sphere
         assertEquals(List.of(p7), sphere.findIntersections(new Ray(new Point(0, 0, 1.5), v3)), "Failed to find the intersection point when the ray start inside the sphere");
@@ -120,5 +119,20 @@ class SphereTests {
 
         //TC17 the run in the sphere and does not reach the middle of the sphere because the direction is opposite
         assertEquals(List.of(p2), sphere.findIntersections(new Ray(p5, v3)), "Failed to find the intersection point when the ray start in the sphere and doesn't reach the middle of the sphere");
+    }
+
+    /**
+     * Test method for {@link geometries.Sphere#findGeoIntersections(primitives.Ray, double)}.
+     */
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The distance between the ray intersection point and the ray's start point is more than the distance(0 points)
+        assertNull(sphere.findGeoIntersections(new Ray(new Point(0, 0.5, 3), new Vector(0, 0, -1)), 1),
+                "Ray's intersection point is out of the distance");
+
+        // TC02: The distance between the ray intersection point and the ray's start point is less than the distance(2 points)
+        assertEquals(2, sphere.findGeoIntersections(new Ray(new Point(0, 0.5, 3), new Vector(0, 0, -1)), 10).size(),
+                "Ray's intersection points is in the distance");
     }
 }

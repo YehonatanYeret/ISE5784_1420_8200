@@ -12,9 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CylinderTests {
 
-    private final Vector v1 = new Vector(0,0,-1);
-    private final Vector v2 = new Vector(0,0,1);
+    private final Vector v1 = new Vector(0, 0, -1);
+    private final Vector v2 = new Vector(0, 0, 1);
     private final Cylinder cylinder = new Cylinder(new Ray(Point.ZERO, v2), 1, 1);
+
     /**
      * Test method for {@link geometries.Cylinder#Cylinder(primitives.Ray, double, double)}.
      */
@@ -118,6 +119,21 @@ class CylinderTests {
         // TC14: Ray tangent to the cylinder's side surface (0 points)
         assertNull(cylinder2.findIntersections(new Ray(new Point(0, 2, -1), new Vector(0, 0, 1))),
                 "Ray's line out of cylinder");
+    }
+
+    /**
+     * Test method for {@link geometries.Cylinder#findGeoIntersections(primitives.Ray, double)}.
+     */
+    @Test
+    void testIntersectionWithDistance() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The distance between the ray intersection point and the ray's start point is more than the distance(0 points)
+        assertNull(cylinder.findGeoIntersections(new Ray(new Point(3, 0, 0.5), new Vector(-1, 0, 0)), 1),
+                "Ray's intersection point is out of the distance");
+
+        // TC02: The distance between the ray intersection point and the ray's start point is less than the distance(2 points)
+       assertEquals(2, cylinder.findGeoIntersections(new Ray(new Point(3, 0, 0.5), new Vector(-1, 0, 0)), 10).size(),
+                "Ray's intersection points is in the distance");
     }
 
 }
