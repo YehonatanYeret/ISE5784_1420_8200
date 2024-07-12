@@ -3,10 +3,10 @@ package renderer;
 import static java.awt.Color.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import geometries.*;
 import org.junit.jupiter.api.Test;
 
-import geometries.Sphere;
-import geometries.Triangle;
+import lighting.*;
 import lighting.AmbientLight;
 import primitives.*;
 import scene.JsonScene;
@@ -14,12 +14,17 @@ import scene.Scene;
 
 /**
  * Test rendering a basic image
+ *
  * @author Dan
  */
 public class RenderTests {
-    /** Scene of the tests */
-    private final Scene          scene  = new Scene("Test scene");
-    /** Camera builder of the tests */
+    /**
+     * Scene of the tests
+     */
+    private final Scene scene = new Scene("Test scene");
+    /**
+     * Camera builder of the tests
+     */
     private final Camera.Builder camera = Camera.getBuilder()
             .setRayTracer(new SimpleRayTracer(scene))
             .setLocation(Point.ZERO).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
@@ -52,6 +57,7 @@ public class RenderTests {
     }
 
     // For stage 6 - please disregard in stage 5
+
     /**
      * Produce a scene with basic 3D model - including individual lights of the
      * bodies and render it into a png image with a grid
@@ -79,24 +85,72 @@ public class RenderTests {
                 .writeToImage();
     }
 
-    /** Test for XML based scene - for bonus */
+    /**
+     * Test for JSON based scene - for bonus
+     */
     @Test
     public void basicRenderJson() {
-        // This is the test for the bonus part of the exercise
-        //try to load a scene from a json file and render it
-        //fail if the function throws
         assertDoesNotThrow(() -> {
-            Scene scene1 = JsonScene.importScene("jsonScenes/test1.json");
-
+            Scene scene1 = JsonScene.importScene("jsonScenes/multydiamonds.json");
             camera
-                    .setImageWriter(new ImageWriter("json render test", 1000, 1000))
+                    .setImageWriter(new ImageWriter("multi diamond", 1000, 1000))
                     .setRayTracer(new SimpleRayTracer(scene1))
+
+                    .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
+                    .setLocation(new Point(0, -350, 45))//Point(0, 130, 30)
+                    .setVpDistance(500)
+                    .setVpSize(150, 150)
+
                     .build()
                     .renderImage()
-//                    .printGrid(100, new Color(YELLOW))
+                    .writeToImage();
+
+        }, "Failed to render image");
+    }
+
+    @Test
+    public void basicRenderJson2() {
+        assertDoesNotThrow(() -> {
+                    final Camera.Builder camera = Camera.getBuilder()
+                            .setRayTracer(new SimpleRayTracer(scene))
+                            .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 0.1, 1).normalize())
+//                            .setDirection(new Vector(-0.5, 1, -0.1).normalize(), new Vector(0.05, 0.1, 0.75).normalize())
+                            .setLocation(new Point(0, -350, 60))//Point(0, 130, 30)
+                            .setVpDistance(500)
+                            .setVpSize(150, 150);
+                    Scene scene = JsonScene.importScene("jsonScenes/diamondRing.json");
+
+                    camera
+                            .setRayTracer(new SimpleRayTracer(scene))
+                            .setImageWriter(new ImageWriter("diamond ring", 1000, 1000))
+                            .build()
+                            .renderImage()
+                            .writeToImage();
+                }, "Failed to render image"
+        );
+    }
+
+    @Test
+    public void basicRenderJson3() {
+        assertDoesNotThrow(() -> {
+            Scene scene1 = JsonScene.importScene("jsonScenes/snooker.json");
+            camera
+                    .setImageWriter(new ImageWriter("multi diamond depth", 1000, 1000))
+                    .setRayTracer(new SimpleRayTracer(scene1))
+
+                    .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
+                    .setLocation(new Point(0, -350, 45))//Point(0, 130, 30)
+                    .setVpDistance(500)
+                    .setVpSize(150, 150)
+
+                    .setAmountOfRays(5)
+                    .setDepthOfField(320)
+                    .setAperture(3)
+
+                    .build()
+                    .renderImage()
                     .writeToImage();
 
         }, "Failed to render image");
     }
 }
-

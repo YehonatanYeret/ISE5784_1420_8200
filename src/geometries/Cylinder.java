@@ -70,7 +70,7 @@ public class Cylinder extends Tube {
         while (iterator.hasNext()) {
             Point intersection = iterator.next();
             double t = axis.getDirection().dotProduct(intersection.subtract(axis.getPoint(0d)));
-            if (t <= 0d || t >= height || alignZero(intersection.distance(ray.getPoint(0)) - maxDistance) > 0d) {
+            if (t <= 0d || t >= height || alignZero(intersection.distanceSquared(ray.getPoint(0)) - maxDistance * maxDistance) > 0d) {
                 iterator.remove();
             }
         }

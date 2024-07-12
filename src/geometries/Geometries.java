@@ -3,6 +3,7 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -30,8 +31,7 @@ public class Geometries extends Intersectable{
      * @param geometries the geometries to add
      */
     public void add(Intersectable... geometries) {
-        for (Intersectable geometry : geometries)
-            this.geometries.add(geometry);
+        this.geometries.addAll(Arrays.asList(geometries));
     }
 
     @Override

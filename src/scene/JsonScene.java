@@ -44,8 +44,10 @@ public class JsonScene {
             double ka = ((Number) ambientLightObj.get("ka")).doubleValue();
             scene.setAmbientLight(new AmbientLight(ambientLight, ka));
         }
-        if(sceneObj.containsKey("geometries"))
-            scene.setGeometries(parseGeometries((JSONArray) sceneObj.get("geometries")));
+        if(sceneObj.containsKey("geometries")){
+            JSONArray materials = (JSONArray) sceneObj.get("materials");
+            scene.setGeometries(parseGeometries((JSONArray) sceneObj.get("geometries"), materials));
+        }
 
         if(sceneObj.containsKey("lights"))
             scene.setLights(parseLights((JSONArray) sceneObj.get("lights")));
@@ -109,10 +111,11 @@ public class JsonScene {
         if (lightObj.containsKey("kq")) {
             pointLight.setKq(((Number) lightObj.get("kq")).doubleValue());
         }
+
         return pointLight;
     }
 
-    private static Geometries parseGeometries(JSONArray geometriesArray) {
+    private static Geometries parseGeometries(JSONArray geometriesArray, JSONArray materials) {
         Geometries geometries = new Geometries();
         for (Object obj : geometriesArray) {
             JSONObject geometryObj = (JSONObject) obj;
@@ -134,7 +137,7 @@ public class JsonScene {
             }
 
             if (geometryObj.containsKey("material"))
-                parseMaterial(geometryObj, geometry);
+                parseMaterial(geometryObj, geometry, materials);
 
             if(geometryObj.containsKey("emission"))
                 geometry.setEmission(parseColor((String) geometryObj.get("emission")));
@@ -144,17 +147,43 @@ public class JsonScene {
         return geometries;
     }
 
-    private static void parseMaterial(JSONObject geometryObj, Geometry geometry) {
-        JSONObject materialObj = (JSONObject) geometryObj.get("material");
+    private static void parseMaterial(JSONObject geometryObj, Geometry geometry, JSONArray materials) {
+
+        Object objCheck = geometryObj.get("material");
+        JSONObject materialObj = null;
+        if (objCheck instanceof String) {
+            int materialIndex = Integer.parseInt((String) objCheck);
+            materialObj = (JSONObject) materials.get(materialIndex);
+        } else {
+            materialObj = (JSONObject) objCheck;
+        }
+
         Material material = new Material();
         if (materialObj.containsKey("kd")) {
-            material.setKd(((Number) materialObj.get("kd")).doubleValue());
+            if(materialObj.get("kd") instanceof Number)
+                material.setKd(((Number) materialObj.get("kd")).doubleValue());
+            else{
+                String[] kd = ((String) materialObj.get("kd")).split(" ");
+                Double3 kdColor = new Double3(Double.parseDouble(kd[0]), Double.parseDouble(kd[1]), Double.parseDouble(kd[2]));
+                material.setKd(kdColor);
+            }
         }
         if (materialObj.containsKey("ks")) {
-            material.setKs(((Number) materialObj.get("ks")).doubleValue());
+            if(materialObj.get("ks") instanceof Number)
+                material.setKd(((Number) materialObj.get("ks")).doubleValue());
+            else{
+                String[] ks = ((String) materialObj.get("ks")).split(" ");
+                Double3 ksColor = new Double3(Double.parseDouble(ks[0]), Double.parseDouble(ks[1]), Double.parseDouble(ks[2]));
+                material.setKd(ksColor);
+            }
         }
         if (materialObj.containsKey("ns")) {
             material.setShininess(((Number) materialObj.get("ns")).intValue());
+        }
+        if(materialObj.containsKey("kr"))
+            material.setKr(((Number) materialObj.get("kr")).doubleValue());
+        if (materialObj.containsKey("kt")) {
+            material.setKt(((Number) materialObj.get("kt")).doubleValue());
         }
         geometry.setMaterial(material);
     }

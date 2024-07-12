@@ -2,7 +2,12 @@ package renderer;
 
 import primitives.*;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Random;
+
+import static primitives.Util.alignZero;
 
 
 /**
@@ -21,8 +26,15 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
 
+    private int amountOfRays_DOF = 1;// the number of rays in the grid for the depth of field
+    private int amountOfRays_AA = 1; // the number of rays in the grid for the depth of field
+    private double aperture; // the radius of the circle of the camera
+    private double depthOfField; // the distance between the camera and the focus _focusPoint
+
+
     /**
      * Camera getter
+     *
      * @return the location of the camera
      */
     public Point getP0() {
@@ -31,6 +43,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the up direction of the camera
      */
     public Vector getVUp() {
@@ -39,6 +52,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the direction of the camera
      */
     public Vector getVTo() {
@@ -47,6 +61,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the right direction of the camera
      */
     public Vector getVRight() {
@@ -55,6 +70,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the width of the view plane
      */
     public double getWidth() {
@@ -68,6 +84,42 @@ public class Camera implements Cloneable {
      */
     public double getHeight() {
         return height;
+    }
+
+    /**
+     * Camera getter
+     *
+     * @return the aperture of the camera
+     */
+    public double getAperture() {
+        return aperture;
+    }
+
+    /**
+     * Camera getter
+     *
+     * @return the depth of field of the camera
+     */
+    public double getDepthOfField() {
+        return depthOfField;
+    }
+
+    /**
+     * Camera getter
+     *
+     * @return the number of rays in the grid for the depth of field
+     */
+    public int getAmountOfRaysDOF() {
+        return amountOfRays_DOF;
+    }
+
+    /**
+     * Camera getter
+     *
+     * @return the number of rays in the grid for the depth of field
+     */
+    public int getAmountOfRaysAA() {
+        return amountOfRays_AA;
     }
 
     /**
@@ -143,6 +195,7 @@ public class Camera implements Cloneable {
 
         /**
          * Set the image writer
+         *
          * @param imageWriter the image writer
          * @return the camera builder
          */
@@ -153,11 +206,56 @@ public class Camera implements Cloneable {
 
         /**
          * Set the ray tracer
+         *
          * @param rayTracer the ray tracer
          * @return the camera builder
          */
         public Builder setRayTracer(RayTracerBase rayTracer) {
             camera.rayTracer = rayTracer;
+            return this;
+        }
+
+        /**
+         * Set the number of rays in the grid for the depth of field
+         *
+         * @param n the number of rays in the grid
+         * @return the camera builder
+         */
+        public Builder setAmountOfRays(int n) {
+            camera.amountOfRays_DOF = n;
+            return this;
+        }
+
+        /**
+         * Set the aperture of the camera
+         *
+         * @param aperture the aperture of the camera
+         * @return the camera builder
+         */
+        public Builder setAperture(double aperture) {
+            camera.aperture = aperture;
+            return this;
+        }
+
+        /**
+         * Set the depth of field of the camera
+         *
+         * @param depthOfField the depth of field of the camera
+         * @return the camera builder
+         */
+        public Builder setDepthOfField(double depthOfField) {
+            camera.depthOfField = depthOfField;
+            return this;
+        }
+
+        /**
+         * Set the number of rays in the grid for the anti-aliasing
+         *
+         * @param n the number of rays in the grid
+         * @return the camera builder
+         */
+        public Builder setAmountOfRaysAA(int n) {
+            camera.amountOfRays_AA = n;
             return this;
         }
 
@@ -170,21 +268,21 @@ public class Camera implements Cloneable {
             final String className = "Camera";
             final String description = "values not set: ";
 
-            if(camera.p0 == null)
+            if (camera.p0 == null)
                 throw new MissingResourceException(description, className, "p0");
-            if(camera.vUp == null)
+            if (camera.vUp == null)
                 throw new MissingResourceException(description, className, "vUp");
-            if(camera.vTo == null)
+            if (camera.vTo == null)
                 throw new MissingResourceException(description, className, "vTo");
-            if(camera.width == 0d)
+            if (camera.width == 0d)
                 throw new MissingResourceException(description, className, "width");
-            if(camera.height == 0d)
+            if (camera.height == 0d)
                 throw new MissingResourceException(description, className, "height");
-            if(camera.distance == 0d)
+            if (camera.distance == 0d)
                 throw new MissingResourceException(description, className, "distance");
-            if(camera.imageWriter == null)
+            if (camera.imageWriter == null)
                 throw new MissingResourceException(description, className, "imageWriter");
-            if(camera.rayTracer == null)
+            if (camera.rayTracer == null)
                 throw new MissingResourceException(description, className, "rayTracer");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
@@ -263,13 +361,14 @@ public class Camera implements Cloneable {
 
     /**
      * Print a grid on the image
+     *
      * @param interval the interval between the lines of the grid
-     * @param color the color of the grid
+     * @param color    the color of the grid
      */
     public Camera printGrid(int interval, Color color) {
-        for(int i = 0; i < imageWriter.getNy(); i++) {
-            for(int j = 0; j < imageWriter.getNx(); j++) {
-                if(i % interval == 0 || j % interval == 0) {
+        for (int i = 0; i < imageWriter.getNy(); i++) {
+            for (int j = 0; j < imageWriter.getNx(); j++) {
+                if (i % interval == 0 || j % interval == 0) {
                     imageWriter.writePixel(j, i, color);
                 }
             }
@@ -286,15 +385,137 @@ public class Camera implements Cloneable {
 
     /**
      * Cast a ray through a pixel
+     *
      * @param nx the number of pixels in the x direction
      * @param ny the number of pixels in the y direction
-     * @param i the y index of the pixel
-     * @param j the x index of the pixel
+     * @param i  the y index of the pixel
+     * @param j  the x index of the pixel
      */
     private void castRay(int nx, int ny, int i, int j) {
         Ray ray = constructRay(nx, ny, j, i);
         Color color = rayTracer.traceRay(ray);
         imageWriter.writePixel(j, i, color);
 
+    }
+
+
+    /**
+     * Render the image with implementation of the depth of field
+     */
+    public Camera renderImageWithDepthOfField() {
+        int nx = imageWriter.getNx();
+        int ny = imageWriter.getNy();
+        for (int i = 0; i < ny; i++) {
+            for (int j = 0; j < nx; j++) {
+                Ray myRay = constructRay(nx, ny, j, i);
+                List<Ray> myRays = constructRaysGridFromCamera(amountOfRays_DOF, myRay);
+                Color myColor = Color.BLACK;
+
+                for (Ray ray : myRays) { // we pass in the list myRays and for each ray we found his color
+                    myColor = myColor.add(rayTracer.traceRay(ray)); // we add the color of each ray to myColor
+                }
+                //calc average color
+                imageWriter.writePixel(j, i, myColor.scale(1d / myRays.size()));
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * Render the image with implementation of the depth of field
+     */
+    public Camera renderImageWithAntiAntialiasing() {
+        int nx = imageWriter.getNx();
+        int ny = imageWriter.getNy();
+        double pixelSize = width / nx; // Calculate pixel size
+
+        for (int i = 0; i < ny; i++) {
+            for (int j = 0; j < nx; j++) {
+                Color myColor = Color.BLACK;
+                for (int k = 0; k < amountOfRays_AA; k++) {
+                    Ray myRay = constractRay(amountOfRays_AA, amountOfRays_AA, j, i, pixelSize);
+                    myColor = myColor.add(rayTracer.traceRay(myRay));
+                }
+                // Calculate average color
+                imageWriter.writePixel(j, i, myColor.scale(1.0 / amountOfRays_AA));
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Construct a grid of rays from the camera
+     *
+     * @param n   the number of rays in the grid
+     * @param ray the ray from the camera
+     * @return the list of rays in the circle
+     */
+    public List<Ray> constructRaysGridFromCamera(int n, Ray ray) {
+        List<Ray> myRays = new LinkedList<>(); //the list of all the rays
+
+        double t = depthOfField / (vTo.dotProduct(ray.getDirection())); // distance from the focusPoint on the aperture grid to the focus focusPoint ( found with the cosinus)
+        Point focusPoint = ray.getPoint(t); // we found the focus focusPoint
+
+        double pixelSize = alignZero((aperture * 2) / n); // the size of each pixel
+
+        // we construct a ray from each pixel of the grid, and we select only the rays in the circle
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Ray tmpRay = constractRay(n, n, j, i, pixelSize, focusPoint); // we construct a ray from a pixel
+                if (tmpRay.getPoint(t).distanceSquared(focusPoint) <= aperture * aperture) // we check if the ray is in the circle
+                    myRays.add(tmpRay); // we add the ray to the list
+            }
+        }
+
+        return myRays; // we return  the list of all my rays in the circle
+    }
+
+    private Ray constractRay(int nX, int nY, double j, double i, double pixelSize, Point focusPoint) {
+
+        Point pIJ = p0;
+
+        Random r = new Random(); // we want a random point for each pixel for more precision
+
+// we add a random point to the pixel
+        double jitterX = (r.nextDouble() - 0.5) * pixelSize;
+        double jitterY = (r.nextDouble() - 0.5) * pixelSize;
+
+        double xJ = ((j + jitterX) - ((nX - 1) / 2d)) * pixelSize;
+        double yI = -((i + jitterY) - ((nY - 1) / 2d)) * pixelSize;
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(vUp.scale(yI));
+        }
+
+        Vector vIJ = focusPoint.subtract(pIJ);
+
+        return new Ray(pIJ, vIJ); // return a new ray from a pixel
+    }
+
+    private Ray constractRay(int nX, int nY, double j, double i, double pixelSize) {
+        Random r = new Random();
+
+        // Calculate the pixel's center position
+        double xCenter = (j - (nX - 1) / 2d) * (width / nX);
+        double yCenter = -(i - (nY - 1) / 2d) * (height / nY);
+
+        // Add a random offset within the pixel
+        double jitter = pixelSize / 2;
+        double xOffset = (r.nextDouble() - 0.5) * jitter;
+        double yOffset = (r.nextDouble() - 0.5) * jitter;
+
+        double x = xCenter + xOffset;
+        double y = yCenter + yOffset;
+
+        Point pIJ = p0.add(vRight.scale(x)).add(vUp.scale(y));
+
+        // Move the point to the view plane
+        pIJ = pIJ.add(vTo.scale(distance));
+
+        return new Ray(p0, pIJ.subtract(p0).normalize());
     }
 }
