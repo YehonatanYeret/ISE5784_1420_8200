@@ -95,12 +95,12 @@ public class RenderTests {
             camera
                     .setImageWriter(new ImageWriter("multi diamond", 1000, 1000))
                     .setRayTracer(new SimpleRayTracer(scene1))
-
+                    .setMultithreading(3)
+                    .setDebugPrint(0.1)
                     .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
                     .setLocation(new Point(0, -350, 45))//Point(0, 130, 30)
                     .setVpDistance(500)
                     .setVpSize(150, 150)
-
                     .build()
                     .renderImage()
                     .writeToImage();

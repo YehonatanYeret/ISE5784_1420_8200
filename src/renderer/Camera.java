@@ -31,6 +31,9 @@ public class Camera implements Cloneable {
     private double aperture; // the radius of the circle of the camera
     private double depthOfField; // the distance between the camera and the focus _focusPoint
 
+    private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
+    private final int SPARE_THREADS = 2; // Spare threads if trying to use all the cores
+    private double printInterval = 0; // printing progress percentage interval
 
     /**
      * Camera getter
@@ -260,6 +263,33 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * Set the amount of threads to use for rendering
+         *
+         * @param threads the amount of threads to use
+         * @return the camera builder
+         */
+        public Builder setMultithreading(int threads) {
+            if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");
+            if (threads >= -1) camera.threadsCount = threads;
+            else { // == -2
+                int cores = Runtime.getRuntime().availableProcessors() - camera.SPARE_THREADS;
+                camera.threadsCount = cores <= 2 ? 1 : cores;
+            }
+            return this;
+        }
+
+        /**
+         * Set the interval for printing debug information
+         *
+         * @param interval the interval for printing debug information
+         * @return the camera builder
+         */
+        public Builder setDebugPrint(double interval) {
+            camera.printInterval = interval;
+            return this;
+        }
+
+        /**
          * Build the camera
          *
          * @return the camera
@@ -268,28 +298,18 @@ public class Camera implements Cloneable {
             final String className = "Camera";
             final String description = "values not set: ";
 
-            if (camera.p0 == null)
-                throw new MissingResourceException(description, className, "p0");
-            if (camera.vUp == null)
-                throw new MissingResourceException(description, className, "vUp");
-            if (camera.vTo == null)
-                throw new MissingResourceException(description, className, "vTo");
-            if (camera.width == 0d)
-                throw new MissingResourceException(description, className, "width");
-            if (camera.height == 0d)
-                throw new MissingResourceException(description, className, "height");
-            if (camera.distance == 0d)
-                throw new MissingResourceException(description, className, "distance");
-            if (camera.imageWriter == null)
-                throw new MissingResourceException(description, className, "imageWriter");
-            if (camera.rayTracer == null)
-                throw new MissingResourceException(description, className, "rayTracer");
+            if (camera.p0 == null) throw new MissingResourceException(description, className, "p0");
+            if (camera.vUp == null) throw new MissingResourceException(description, className, "vUp");
+            if (camera.vTo == null) throw new MissingResourceException(description, className, "vTo");
+            if (camera.width == 0d) throw new MissingResourceException(description, className, "width");
+            if (camera.height == 0d) throw new MissingResourceException(description, className, "height");
+            if (camera.distance == 0d) throw new MissingResourceException(description, className, "distance");
+            if (camera.imageWriter == null) throw new MissingResourceException(description, className, "imageWriter");
+            if (camera.rayTracer == null) throw new MissingResourceException(description, className, "rayTracer");
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
-            if (!Util.isZero(camera.vTo.dotProduct(camera.vRight)) ||
-                    !Util.isZero(camera.vTo.dotProduct(camera.vUp)) ||
-                    !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
+            if (!Util.isZero(camera.vTo.dotProduct(camera.vRight)) || !Util.isZero(camera.vTo.dotProduct(camera.vUp)) || !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
             if (camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
@@ -348,16 +368,60 @@ public class Camera implements Cloneable {
     /**
      * Render the image
      */
+
     public Camera renderImage() {
         int ny = imageWriter.getNy();
         int nx = imageWriter.getNx();
-        for (int i = 0; i < ny; i++) {
-            for (int j = 0; j < nx; j++) {
-                castRay(nx, ny, i, j);
+        Pixel.initialize(ny, nx, printInterval);
+
+        if (threadsCount == 0) {
+            for (int i = 0; i < ny; ++i) {
+                for (int j = 0; j < nx; ++j) {
+                    castRay(nx, ny, j, i);
+                }
+            }
+        } else if (threadsCount == -1) {
+            int availableProcessors = Runtime.getRuntime().availableProcessors();
+            List<Thread> threads = new LinkedList<>();
+            for (int t = 0; t < availableProcessors; t++) {
+                threads.add(new Thread(() -> {
+                    Pixel pixel;
+                    while ((pixel = Pixel.nextPixel()) != null) {
+                        castRay(nx, ny, pixel.col(), pixel.row());
+                    }
+                }));
+            }
+            for (var thread : threads) {
+                thread.start();
+            }
+            try {
+                for (var thread : threads) {
+                    thread.join();
+                }
+            } catch (InterruptedException ignore) { }
+        } else {
+            List<Thread> threads = new LinkedList<>();
+            for (int t = 0; t < threadsCount; t++) {
+                threads.add(new Thread(() -> {
+                    Pixel pixel;
+                    while ((pixel = Pixel.nextPixel()) != null) {
+                        castRay(nx, ny, pixel.col(), pixel.row());
+                    }
+                }));
+            }
+            for (var thread : threads) {
+                thread.start();
+            }
+            try {
+                for (var thread : threads) {
+                    thread.join();
+                }
+            } catch (InterruptedException ignore) {
             }
         }
         return this;
     }
+
 
     /**
      * Print a grid on the image
@@ -395,7 +459,7 @@ public class Camera implements Cloneable {
         Ray ray = constructRay(nx, ny, j, i);
         Color color = rayTracer.traceRay(ray);
         imageWriter.writePixel(j, i, color);
-
+        Pixel.pixelDone();
     }
 
 
@@ -477,7 +541,7 @@ public class Camera implements Cloneable {
 
         Random r = new Random(); // we want a random point for each pixel for more precision
 
-// we add a random point to the pixel
+        // we add a random point to the pixel
         double jitterX = (r.nextDouble() - 0.5) * pixelSize;
         double jitterY = (r.nextDouble() - 0.5) * pixelSize;
 

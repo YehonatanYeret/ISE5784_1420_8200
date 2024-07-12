@@ -14,7 +14,7 @@ import java.util.List;
 public class SimpleRayTracer extends RayTracerBase {
 
     private static final Double3 INITIAL_K = Double3.ONE;
-    private static final int MAX_CALC_COLOR_LEVEL = 10;
+    private static final int MAX_CALC_COLOR_LEVEL = 3;
     private static final double MIN_CALC_COLOR_K = 0.001;
 
     /**
@@ -139,7 +139,5 @@ public class SimpleRayTracer extends RayTracerBase {
             if (ktr.lowerThan(MIN_CALC_COLOR_K)) return Double3.ZERO;
         }
         return ktr;
-
-
     }
 }
