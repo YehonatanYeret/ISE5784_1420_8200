@@ -14,7 +14,7 @@ import java.util.List;
 public class SimpleRayTracer extends RayTracerBase {
 
     private static final Double3 INITIAL_K = Double3.ONE;
-    private static final int MAX_CALC_COLOR_LEVEL = 3;
+    private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
 
     /**
@@ -63,7 +63,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = lightSource.getL(point).normalize();
             double nl = n.dotProduct(l);
 
-            if (Util.alignZero(nl * nv) > 0d) {
+            if (Util.alignZero(nl * nv) > 0d) { // if the light source is in front of the geometry
                 Double3 ktr = transparency(geoPoint, lightSource, l, n);
                 if(ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
                     Color lightIntensity = lightSource.getIntensity(point).scale(ktr);
@@ -89,13 +89,6 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector v = ray.getDirection();
         Vector n = gp.geometry.getNormal(gp.point);
         double vn = v.dotProduct(n);
-
-        // Ensure the normal vector is correctly oriented
-//        if (vn > 0) {
-//            n = n.scale(-1);
-//            vn = -vn;
-//        }
-
         return new Ray(gp.point, v.subtract(n.scale(2 * vn)), n);
     }
 

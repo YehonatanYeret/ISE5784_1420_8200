@@ -87,17 +87,19 @@ class CameraTest {
         );
 
         Camera.getBuilder()
-                .setImageWriter(new ImageWriter("advanced_depth", 600, 600))
+                .setImageWriter(new ImageWriter("advanced_depth", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
                 .setVpDistance(150) // Adjusted for a closer view of the scene
                 .setVpSize(40, 40)  // Maintain size for consistency
                 .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
                 .setLocation(new Point(-5, 0, 200)) // Moved closer to the scene for more pronounced depth of field
-//                .setDepthOfField(160)  // Set the focal plane distance to where one sphere should be in focus
-//                .setAperture(5)  // Decreased aperture to reduce overall blurriness while still showing depth of field
-                .setAmountOfRaysAA(225)  // Increased number of rays for a smoother depth of field effect
+                .setDepthOfField(160)  // Set the focal plane distance to where one sphere should be in focus
+                .setAperture(2)  // Decreased aperture to reduce overall blurriness while still showing depth of field
+                .setAmountOfRaysDOF(10)  // Increased number of rays for a smoother depth of field effect
+//                .setAmountOfRaysAA(7)
+                .setMultithreading(-1)
                 .build()
-                .renderImageWithAntiAntialiasing()
+                .renderImage()
                 .writeToImage();
     }
 

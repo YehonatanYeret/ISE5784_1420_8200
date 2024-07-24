@@ -30,4 +30,5 @@ bin/
 
 ### image files ###
 /images/
-/jsonScenes/
+#/jsonScenes/
+/.idea/

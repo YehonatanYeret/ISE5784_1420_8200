@@ -5,9 +5,9 @@ import primitives.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
-import java.util.Random;
 
 import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 
 /**
@@ -28,8 +28,8 @@ public class Camera implements Cloneable {
 
     private int amountOfRays_DOF = 1;// the number of rays in the grid for the depth of field
     private int amountOfRays_AA = 1; // the number of rays in the grid for the depth of field
-    private double aperture; // the radius of the circle of the camera
-    private double depthOfField; // the distance between the camera and the focus _focusPoint
+    private double aperture = 0; // the radius of the circle of the camera
+    private double depthOfField = 100; // the distance between the camera and the focus _focusPoint
 
     private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
     private final int SPARE_THREADS = 2; // Spare threads if trying to use all the cores
@@ -160,7 +160,7 @@ public class Camera implements Cloneable {
          *            (the vector from the camera to the up direction)
          */
         public Builder setDirection(Vector vTo, Vector vUp) {
-            if (!Util.isZero(vTo.dotProduct(vUp))) {
+            if (!isZero(vTo.dotProduct(vUp))) {
                 throw new IllegalArgumentException("vTo and vUp must be orthogonal");
             }
             camera.vTo = vTo.normalize();
@@ -224,7 +224,7 @@ public class Camera implements Cloneable {
          * @param n the number of rays in the grid
          * @return the camera builder
          */
-        public Builder setAmountOfRays(int n) {
+        public Builder setAmountOfRaysDOF(int n) {
             camera.amountOfRays_DOF = n;
             return this;
         }
@@ -309,7 +309,7 @@ public class Camera implements Cloneable {
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
-            if (!Util.isZero(camera.vTo.dotProduct(camera.vRight)) || !Util.isZero(camera.vTo.dotProduct(camera.vUp)) || !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
+            if (!isZero(camera.vTo.dotProduct(camera.vRight)) || !isZero(camera.vTo.dotProduct(camera.vUp)) || !isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
             if (camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
@@ -356,8 +356,8 @@ public class Camera implements Cloneable {
         double xJ = (j - (nX - 1) / 2d) * width / nX;
 
         //check if xJ or yI are not zero, so we will not add zero vector
-        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
-        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+        if (!isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
+        if (!isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
 
         // we need to move the point in the direction of vTo by distance
         pIJ = pIJ.add(vTo.scale(distance));
@@ -368,60 +368,38 @@ public class Camera implements Cloneable {
     /**
      * Render the image
      */
-
     public Camera renderImage() {
         int ny = imageWriter.getNy();
         int nx = imageWriter.getNx();
         Pixel.initialize(ny, nx, printInterval);
 
         if (threadsCount == 0) {
-            for (int i = 0; i < ny; ++i) {
-                for (int j = 0; j < nx; ++j) {
+            for (int i = 0; i < ny; ++i)
+                for (int j = 0; j < nx; ++j)
                     castRay(nx, ny, j, i);
-                }
-            }
-        } else if (threadsCount == -1) {
-            int availableProcessors = Runtime.getRuntime().availableProcessors();
-            List<Thread> threads = new LinkedList<>();
-            for (int t = 0; t < availableProcessors; t++) {
-                threads.add(new Thread(() -> {
-                    Pixel pixel;
-                    while ((pixel = Pixel.nextPixel()) != null) {
-                        castRay(nx, ny, pixel.col(), pixel.row());
-                    }
-                }));
-            }
-            for (var thread : threads) {
-                thread.start();
-            }
-            try {
-                for (var thread : threads) {
-                    thread.join();
-                }
-            } catch (InterruptedException ignore) { }
-        } else {
-            List<Thread> threads = new LinkedList<>();
-            for (int t = 0; t < threadsCount; t++) {
-                threads.add(new Thread(() -> {
-                    Pixel pixel;
-                    while ((pixel = Pixel.nextPixel()) != null) {
-                        castRay(nx, ny, pixel.col(), pixel.row());
-                    }
-                }));
-            }
-            for (var thread : threads) {
-                thread.start();
-            }
-            try {
-                for (var thread : threads) {
-                    thread.join();
-                }
-            } catch (InterruptedException ignore) {
-            }
+            return this;
         }
+        List<Thread> threads = new LinkedList<>();
+        int availableProcessors = threadsCount == -1 ? Runtime.getRuntime().availableProcessors()
+                : threadsCount;
+
+        for (int t = 0; t < availableProcessors; t++) {
+            threads.add(new Thread(() -> {
+                Pixel pixel;
+                while ((pixel = Pixel.nextPixel()) != null)
+                    castRay(nx, ny, pixel.col(), pixel.row());
+            }));
+        }
+        for (var thread : threads)
+            thread.start();
+        try {
+            for (var thread : threads)
+                thread.join();
+        } catch (InterruptedException ignore) {
+        }
+
         return this;
     }
-
 
     /**
      * Print a grid on the image
@@ -456,57 +434,48 @@ public class Camera implements Cloneable {
      * @param j  the x index of the pixel
      */
     private void castRay(int nx, int ny, int i, int j) {
-        Ray ray = constructRay(nx, ny, j, i);
-        Color color = rayTracer.traceRay(ray);
-        imageWriter.writePixel(j, i, color);
+        Ray mainRay = constructRay(nx, ny, j, i);
+        Color accumulatedColor = Color.BLACK;
+
+        // Anti-aliasing loop
+        for (int k = 0; k < amountOfRays_AA; k++) {
+            for (int l = 0; l < amountOfRays_AA; l++) {
+                Ray aaRay = mainRay;
+                if (amountOfRays_AA > 1) {
+                    //anti-aliasing jitter
+                    double xJitter = Util.random(-0.5, 0.5);
+                    double yJitter = Util.random(-0.5, 0.5);
+
+                    Point pIJ = p0;
+
+                    double yI = -(i + (yJitter + k) / amountOfRays_AA - (ny - 1) / 2d) * height / ny;
+                    double xJ = (j + (xJitter + l) / amountOfRays_AA - (nx - 1) / 2d) * width / nx;
+
+                    if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
+                    if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+
+                    pIJ = pIJ.add(vTo.scale(distance));
+                    aaRay = new Ray(p0, pIJ.subtract(p0));
+                }
+
+                // Depth of field loop
+                if (amountOfRays_DOF > 1 && aperture > 0) {
+                    List<Ray> dofRays = constructRaysGridFromCamera(amountOfRays_DOF, aaRay);
+                    Color dofAccumulatedColor = Color.BLACK;
+                    for (Ray dofRay : dofRays) {
+                        dofAccumulatedColor = dofAccumulatedColor.add(rayTracer.traceRay(dofRay));
+                    }
+                    accumulatedColor = accumulatedColor.add(dofAccumulatedColor.scale(1d / dofRays.size()));
+                } else {
+                    accumulatedColor = accumulatedColor.add(rayTracer.traceRay(aaRay));
+                }
+            }
+        }
+        Color averageColor = accumulatedColor.scale(1d / (amountOfRays_AA * amountOfRays_AA));
+        imageWriter.writePixel(j, i, averageColor);
         Pixel.pixelDone();
     }
 
-
-    /**
-     * Render the image with implementation of the depth of field
-     */
-    public Camera renderImageWithDepthOfField() {
-        int nx = imageWriter.getNx();
-        int ny = imageWriter.getNy();
-        for (int i = 0; i < ny; i++) {
-            for (int j = 0; j < nx; j++) {
-                Ray myRay = constructRay(nx, ny, j, i);
-                List<Ray> myRays = constructRaysGridFromCamera(amountOfRays_DOF, myRay);
-                Color myColor = Color.BLACK;
-
-                for (Ray ray : myRays) { // we pass in the list myRays and for each ray we found his color
-                    myColor = myColor.add(rayTracer.traceRay(ray)); // we add the color of each ray to myColor
-                }
-                //calc average color
-                imageWriter.writePixel(j, i, myColor.scale(1d / myRays.size()));
-            }
-        }
-        return this;
-    }
-
-
-    /**
-     * Render the image with implementation of the depth of field
-     */
-    public Camera renderImageWithAntiAntialiasing() {
-        int nx = imageWriter.getNx();
-        int ny = imageWriter.getNy();
-        double pixelSize = width / nx; // Calculate pixel size
-
-        for (int i = 0; i < ny; i++) {
-            for (int j = 0; j < nx; j++) {
-                Color myColor = Color.BLACK;
-                for (int k = 0; k < amountOfRays_AA; k++) {
-                    Ray myRay = constractRay(amountOfRays_AA, amountOfRays_AA, j, i, pixelSize);
-                    myColor = myColor.add(rayTracer.traceRay(myRay));
-                }
-                // Calculate average color
-                imageWriter.writePixel(j, i, myColor.scale(1.0 / amountOfRays_AA));
-            }
-        }
-        return this;
-    }
 
     /**
      * Construct a grid of rays from the camera
@@ -526,8 +495,9 @@ public class Camera implements Cloneable {
         // we construct a ray from each pixel of the grid, and we select only the rays in the circle
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                Ray tmpRay = constractRay(n, n, j, i, pixelSize, focusPoint); // we construct a ray from a pixel
-                if (tmpRay.getPoint(t).distanceSquared(focusPoint) <= aperture * aperture) // we check if the ray is in the circle
+                Point tmpPoint = constructJitteredPoint(n, n, j, i, pixelSize); // we construct a point from a pixel
+                Ray tmpRay = new Ray(tmpPoint, focusPoint.subtract(tmpPoint)); // we construct a ray from the point to the focus focusPoint
+                if (tmpRay.getPoint(0).distanceSquared(p0) <= aperture * aperture) // we check if the ray is in the circle
                     myRays.add(tmpRay); // we add the ray to the list
             }
         }
@@ -535,51 +505,27 @@ public class Camera implements Cloneable {
         return myRays; // we return  the list of all my rays in the circle
     }
 
-    private Ray constractRay(int nX, int nY, double j, double i, double pixelSize, Point focusPoint) {
-
+    /**
+     * Construct a jittered ray from a pixel
+     *
+     * @param nX        the number of pixels in the x direction
+     * @param nY        the number of pixels in the y direction
+     * @param j         the x index of the pixel
+     * @param i         the y index of the pixel
+     * @param pixelSize the size of the pixel
+     * @return the jittered point
+     */
+    private Point constructJitteredPoint(int nX, int nY, double j, double i, double pixelSize) {
+        double jitterX = Util.random(-0.5, 0.5);
+        double jitterY = Util.random(-0.5, 0.5);
         Point pIJ = p0;
 
-        Random r = new Random(); // we want a random point for each pixel for more precision
+        double yI = -(i + jitterY - (nY - 1) / 2d) * pixelSize;
+        double xJ = (j + jitterX - (nX - 1) / 2d) * pixelSize;
 
-        // we add a random point to the pixel
-        double jitterX = (r.nextDouble() - 0.5) * pixelSize;
-        double jitterY = (r.nextDouble() - 0.5) * pixelSize;
+        if (!isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
+        if (!isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
 
-        double xJ = ((j + jitterX) - ((nX - 1) / 2d)) * pixelSize;
-        double yI = -((i + jitterY) - ((nY - 1) / 2d)) * pixelSize;
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(vUp.scale(yI));
-        }
-
-        Vector vIJ = focusPoint.subtract(pIJ);
-
-        return new Ray(pIJ, vIJ); // return a new ray from a pixel
-    }
-
-    private Ray constractRay(int nX, int nY, double j, double i, double pixelSize) {
-        Random r = new Random();
-
-        // Calculate the pixel's center position
-        double xCenter = (j - (nX - 1) / 2d) * (width / nX);
-        double yCenter = -(i - (nY - 1) / 2d) * (height / nY);
-
-        // Add a random offset within the pixel
-        double jitter = pixelSize / 2;
-        double xOffset = (r.nextDouble() - 0.5) * jitter;
-        double yOffset = (r.nextDouble() - 0.5) * jitter;
-
-        double x = xCenter + xOffset;
-        double y = yCenter + yOffset;
-
-        Point pIJ = p0.add(vRight.scale(x)).add(vUp.scale(y));
-
-        // Move the point to the view plane
-        pIJ = pIJ.add(vTo.scale(distance));
-
-        return new Ray(p0, pIJ.subtract(p0).normalize());
+        return pIJ;
     }
 }

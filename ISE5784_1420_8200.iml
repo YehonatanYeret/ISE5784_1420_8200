@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unittests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/images" />
-      <excludeFolder url="file://$MODULE_DIR$/jsonScenes" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
