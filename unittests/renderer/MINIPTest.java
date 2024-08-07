@@ -101,10 +101,28 @@ public class MINIPTest {
                     .setVpDistance(500)
                     .setVpSize(150, 150)
                     .setMultithreading(-1)
-                    .setDepthOfField(300)
-                    .setAmountOfRaysDOF(4)
-                    .setAmountOfRaysAA(5)
-                    .setAperture(1.5)
+                    .build()
+                    .renderImage()
+                    .writeToImage();
+
+        }, "Failed to render image");
+    }
+
+    @Test
+    public void house() {
+        assertDoesNotThrow(() -> {
+            Scene scene = JsonScene.importScene("jsonScenes/house.json");
+
+
+            camera
+                    .setImageWriter(new ImageWriter("house", 1000, 1000))
+                    .setRayTracer(new SimpleRayTracer(scene))
+
+                    .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
+                    .setLocation(new Point(0, -320, 40))
+                    .setVpDistance(500)
+                    .setVpSize(150, 150)
+                    .setMultithreading(-1)
                     .build()
                     .renderImage()
                     .writeToImage();
