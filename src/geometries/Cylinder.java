@@ -27,6 +27,46 @@ public class Cylinder extends Tube {
     public Cylinder(Ray axis, double radius, double height) {
         super(axis, radius);
         this.height = height;
+        this.box = getBoundingBox();
+    }
+
+    /**
+     * Returns a bounding box for the cylinder.
+     * The bounding box is defined by the cylinder's radius and height.
+     *
+     * @return the bounding box for the cylinder
+     */
+    @Override
+    public BoundingBox getBoundingBox() {
+        // Get the axis direction and the starting point of the cylinder
+        Point p0 = axis.getPoint(0d);
+        Vector dir = axis.getDirection();
+
+        // Define the minimum and maximum points for the bounding box
+        double minX = p0.getX() - radius;
+        double minY = p0.getY() - radius;
+        double minZ = p0.getZ();
+        double maxX = p0.getX() + radius;
+        double maxY = p0.getY() + radius;
+        double maxZ = p0.getZ() + height;
+
+        // Adjust the bounding box if the cylinder's axis is not aligned to the Z-axis.
+        // The bounding box should be parallel to the coordinate axes, so we must project the cylinder to these axes.
+        if (!Util.isZero(dir.getX())) {
+            minX = Math.min(minX, p0.getX() - radius);
+            maxX = Math.max(maxX, p0.getX() + radius);
+        }
+        if (!Util.isZero(dir.getY())) {
+            minY = Math.min(minY, p0.getY() - radius);
+            maxY = Math.max(maxY, p0.getY() + radius);
+        }
+        if (!Util.isZero(dir.getZ())) {
+            minZ = Math.min(minZ, p0.getZ());
+            maxZ = Math.max(maxZ, p0.getZ() + height);
+        }
+
+        // Return the bounding box
+        return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
     }
 
     @Override

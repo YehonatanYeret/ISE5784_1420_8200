@@ -9,6 +9,18 @@ import java.util.List;
 public abstract class Intersectable {
 
     /**
+     * The bounding box of the geometry
+     */
+    protected BoundingBox box;
+
+    /**
+     * Constructs an Intersectable object with the specified bounding box.
+     */
+    public BoundingBox getBoundingBox() {
+        return box;
+    }
+
+    /**
      * The color of the geometry
      */
     public static class GeoPoint {
@@ -54,6 +66,11 @@ public abstract class Intersectable {
      * @return a list of intersection points
      */
     public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance){
+        // Checks if the object's bounding box exists and if the ray intersects with it
+        if (box != null && !box.hasIntersection(ray)) {
+            return null; // No intersections if the bounding box check fails
+        }
+        // If the bounding box check passes, proceed to find intersections
         return findGeoIntersectionsHelper(ray, maxDistance);
     }
 
@@ -74,4 +91,6 @@ public abstract class Intersectable {
         var GeoList = findGeoIntersections(ray);
         return  GeoList == null ? null : GeoList.stream().map(gp -> gp.point).toList();
     }
+
+
 }
