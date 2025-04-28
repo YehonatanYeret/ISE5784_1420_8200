@@ -119,7 +119,7 @@ Camera customCamera = Camera.getBuilder()
 
 |        Crown Scene         |               Multi Diamonds                |        House Render        |
 |:--------------------------:|:-------------------------------------------:|:--------------------------:|
-| ![Crown](images/crown.png) | ![Multi Diamonds](images/multi diamond.png) | ![House](images/house.png) |
+| ![Crown](images/crown.png) | ![Multi Diamonds](images/multiDiamond.png) | ![House](images/house.png) |
 
 |         Snooker Table          |         Advanced Depth Test         |
 |:------------------------------:|:-----------------------------------:|
@@ -142,13 +142,13 @@ photographic effects.
 
 ## 📈 Roadmap
 
-- ✅ JSON scene loading
 - ✅ Basic shapes and materials
 - ✅ Reflection & refraction
+- ✅ JSON scene loading
 - ✅ Depth of field and anti-aliasing
-- 🔲 Soft shadows
-- 🔲 Texture mapping
-- 🔲 Multi-threaded rendering
+- ✅ Soft shadows
+- ✅ Texture mapping
+- ✅ Multi-threaded rendering
 
 ---
 
