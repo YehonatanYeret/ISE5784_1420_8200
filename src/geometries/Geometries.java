@@ -18,6 +18,10 @@ public class Geometries extends Intersectable{
      */
     public Geometries() { }
 
+    public Geometries(List<Intersectable> geometries) {
+        add(geometries);
+    }
+
     /**
      *
      * @param geometries the geometries to add
@@ -34,6 +38,15 @@ public class Geometries extends Intersectable{
         this.geometries.addAll(Arrays.asList(geometries));
     }
 
+    /**
+     * Adds a list of Intersectable objects to the Geometries collection.
+     *
+     * @param geometries A list of Intersectable objects to be added.
+     */
+    public void add(List<Intersectable> geometries) {
+        this.geometries.addAll(geometries);
+    }
+
     @Override
     public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         List<GeoPoint> intersections = null;
@@ -48,4 +61,13 @@ public class Geometries extends Intersectable{
         return intersections;
     }
 
+    /**
+     * Creates a bounding volume hierarchy (BVH) for the geometries in the collection.
+     * This method optimizes the intersection tests by organizing the geometries into a hierarchical structure.
+     */
+    public void makeBVH() {
+        List<Intersectable> intersectables = BoundingBox.buildBVH(geometries);
+        geometries.clear();
+        geometries.addAll(intersectables);
+    }
 }

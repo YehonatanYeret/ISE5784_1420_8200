@@ -77,6 +77,7 @@ public class RenderTests {
                         .setEmission(new Color(BLUE)));
         scene.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2, 0.2, 0.2))); //
 
+        scene.geometries.makeBVH();
         camera
                 .setImageWriter(new ImageWriter("color render test", 1000, 1000))
                 .build()
@@ -84,9 +85,4 @@ public class RenderTests {
                 .printGrid(100, new Color(WHITE))
                 .writeToImage();
     }
-
-    /**
-     * Test for JSON based scene - for bonus
-     */
-
 }

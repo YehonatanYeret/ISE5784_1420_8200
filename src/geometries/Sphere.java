@@ -24,6 +24,7 @@ public class Sphere extends RadialGeometry {
     public Sphere(double radius, Point center) {
         super(radius);
         this.center = center;
+        this.box = getBoundingBox();
     }
 
     @Override
@@ -62,5 +63,30 @@ public class Sphere extends RadialGeometry {
             return List.of(new GeoPoint(this,ray.getPoint(t2)));
 
         return null;
+    }
+
+    /**
+     * Returns a bounding box for the sphere.
+     * The bounding box is a cube where each side is twice the radius of the sphere.
+     *
+     * @return the bounding box for the sphere
+     */
+    @Override
+    public BoundingBox getBoundingBox() {
+        // Get the X, Y, Z coordinates of the center
+        double x = center.getX();
+        double y = center.getY();
+        double z = center.getZ();
+
+        // The bounding box will extend from (center - radius) to (center + radius) in each direction
+        double minX = x - radius;
+        double maxX = x + radius;
+        double minY = y - radius;
+        double maxY = y + radius;
+        double minZ = z - radius;
+        double maxZ = z + radius;
+
+        // Create and return the bounding box
+        return new BoundingBox(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
     }
 }

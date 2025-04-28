@@ -29,10 +29,10 @@ public class MINIPTest {
     public void DiamondBox() {
         assertDoesNotThrow(() -> {
             Scene scene1 = JsonScene.importScene("jsonScenes/multydiamonds.json");
+            scene1.geometries.makeBVH();
             camera
                     .setImageWriter(new ImageWriter("multi diamond", 1000, 1000))
                     .setRayTracer(new SimpleRayTracer(scene1))
-//                    .setMultithreading(3)
                     .setDebugPrint(0.1)
                     .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
                     .setLocation(new Point(0, -350, 45))//Point(0, 130, 30)
@@ -50,10 +50,12 @@ public class MINIPTest {
     public void diamondRing() {
         assertDoesNotThrow(() -> {
                     Scene scene = JsonScene.importScene("jsonScenes/diamondRing.json");
+                    scene.geometries.makeBVH();
                     final Camera.Builder camera = Camera.getBuilder()
                             .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 0.1, 1).normalize())
                             .setLocation(new Point(0, -350, 60))//Point(0, 130, 30)
                             .setVpDistance(500)
+                            .setMultithreading(-1)
                             .setVpSize(150, 150)
                             .setRayTracer(new SimpleRayTracer(scene))
                             .setImageWriter(new ImageWriter("diamond ring", 1000, 1000));
@@ -90,7 +92,7 @@ public class MINIPTest {
     public void crown() {
         assertDoesNotThrow(() -> {
             Scene scene = JsonScene.importScene("jsonScenes/crown.json");
-
+            scene.geometries.makeBVH();
 
             camera
                     .setImageWriter(new ImageWriter("crown", 1000, 1000))
@@ -99,6 +101,7 @@ public class MINIPTest {
                     .setDirection(new Vector(0, 1, -0.1).normalize(), new Vector(0, 1, 10).normalize())
                     .setLocation(new Point(0, -320, 40))
                     .setVpDistance(500)
+                    .setAmountOfRaysAA(2)
                     .setVpSize(150, 150)
                     .setMultithreading(-1)
                     .build()

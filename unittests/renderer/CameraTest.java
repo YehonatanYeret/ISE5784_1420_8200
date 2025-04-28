@@ -86,6 +86,8 @@ class CameraTest {
                 new Sphere(5, new Point(-10, -5, 80)).setEmission(new Color(50, 100, 100)).setMaterial(mat)
         );
 
+        scene.geometries.makeBVH();
+
         Camera.getBuilder()
                 .setImageWriter(new ImageWriter("advanced_depth", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
@@ -95,8 +97,8 @@ class CameraTest {
                 .setLocation(new Point(-5, 0, 200)) // Moved closer to the scene for more pronounced depth of field
                 .setDepthOfField(160)  // Set the focal plane distance to where one sphere should be in focus
                 .setAperture(2)  // Decreased aperture to reduce overall blurriness while still showing depth of field
-                .setAmountOfRaysDOF(10)  // Increased number of rays for a smoother depth of field effect
-//                .setAmountOfRaysAA(7)
+                .setAmountOfRaysDOF(3)  // Increased number of rays for a smoother depth of field effect
+                .setAmountOfRaysAA(3)
                 .setMultithreading(-1)
                 .build()
                 .renderImage()
