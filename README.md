@@ -2,7 +2,9 @@
 
 ![Banner](images/advanced_depth.png)
 
-A powerful yet easy-to-use Java ray tracing engine. Build stunning 3D scenes using JSON, play with lights and materials, and render high-quality images in just a few lines of code.
+A powerful yet easy-to-use Java ray tracing engine. Build stunning 3D scenes using JSON, play with lights and materials,
+and render high-quality images in just a few lines of code with a flexible and extensible architecture in SOLID rules,
+with focus on efficiency and performance (Multi-threading support and more math optimizations).
 
 ---
 
@@ -35,14 +37,38 @@ A powerful yet easy-to-use Java ray tracing engine. Build stunning 3D scenes usi
 ## 🚀 Quick Start
 
 ```java
-Scene scene = JsonScene.importScene("jsonScenes/house.json");
-Camera camera = new Camera("house_render", 800, 600)
-    .setVPSize(200, 150)
-    .setVPDistance(500)
-    .setRayTracer(new SimpleRayTracer(scene));
+import scene.Scene;
+import scene.JsonScene;
+import renderer.ImageWriter;
+import renderer.Camera;
+import renderer.SimpleRayTracer;
+import primitives.Point;
+import primitives.Vector;
+import org.json.simple.parser.ParseException;
 
-camera.renderImage()
-      .writeToImage();
+import java.io.IOException;
+
+public static void main(String[] args) throws IOException, ParseException {
+    // Import scene from JSON
+    Scene scene = JsonScene.importScene("jsonScenes/house.json");
+
+    // Prepare image writer
+    ImageWriter writer = new ImageWriter("house_render", 800, 600);
+
+    // Configure camera using builder pattern
+    Camera camera = Camera.getBuilder()
+            .setLocation(new Point(0, -200, 50))     // camera position
+            .setDirection(new Vector(0, 200, -50), new Vector(0, 1, 0)) // look-at and up vectors
+            .setVpSize(200, 150)
+            .setVpDistance(500)
+            .setImageWriter(writer)
+            .setRayTracer(new SimpleRayTracer(scene))
+            .build();
+
+    // Render and save image
+    camera.renderImage()
+            .writeToImage();
+}
 ```
 
 All generated images are saved under the `images/` folder by default.
@@ -69,41 +95,46 @@ All generated images are saved under the `images/` folder by default.
 ## 💡 Usage Examples
 
 ### Custom JSON Scene
-```json
-{
-  "camera": { "position": [0, -200, 50], "lookAt": [0,0,0], "vpSize": [300,200], "vpDistance": 800 },
-  "lights": [ { "type": "point", "position": [50,50,50], "intensity": [1,1,1] } ],
-  "geometries": [ { "type": "sphere", "center": [0,0,0], "radius": 50, "material": { "kd": 0.5, "ks": 0.5, "nShininess": 100 } } ]
-}
-```
-Load and render:
+
 ```java
 Scene custom = JsonScene.importScene("jsonScenes/custom.json");
-new Camera("custom_scene", 800,600)
-    .setRayTracer(new SimpleRayTracer(custom))
-    .renderImage()
-    .writeToImage();
+// Prepare image writer
+ImageWriter customWriter = new ImageWriter("custom_scene", 800, 600);
+// Configure and render with builder
+Camera customCamera = Camera.getBuilder()
+        .setLocation(new Point(0, -200, 50))
+        .setDirection(new Vector(0, 200, -50), new Vector(0, 1, 0))
+        .setVpSize(300, 200)
+        .setVpDistance(800)
+        .setImageWriter(customWriter)
+        .setRayTracer(new SimpleRayTracer(custom))
+        .build()
+        .renderImage()
+        .writeToImage();
 ```
 
 ---
 
 ## 🖼️ Gallery
 
-| Crown Scene | Multi Diamonds | House Render |
-|:-----------:|:--------------:|:------------:|
+|        Crown Scene         |               Multi Diamonds                |        House Render        |
+|:--------------------------:|:-------------------------------------------:|:--------------------------:|
 | ![Crown](images/crown.png) | ![Multi Diamonds](images/multi diamond.png) | ![House](images/house.png) |
 
-| Snooker Table | Advanced Depth Test |
-|:-------------:|:-------------------:|
+|         Snooker Table          |         Advanced Depth Test         |
+|:------------------------------:|:-----------------------------------:|
 | ![Snooker](images/snooker.png) | ![Depth](images/advanced_depth.png) |
 
-**Advanced Depth Test** showcases depth of field by blurring objects outside the focal plane, creating realistic photographic effects.
+**Advanced Depth Test** showcases depth of field by blurring objects outside the focal plane, creating realistic
+photographic effects.
 
 ## 🏗️ Architecture
 
 - **Geometries**: define shapes implementing `Intersectable`.
 - **Lighting**: light sources calculate illumination via Phong model.
 - **Renderer**: `Camera` casts rays, constructs `RayTracerBase` pipeline.
+- **Multi-threading**: configure via `Camera.Builder.setMultithreading(int)` (e.g. `-2` for auto, `0` for single-thread,
+  `N` for fixed threads). Parallelizes pixel casting across cores to reduce render times on multi-core CPUs.
 - **Scene**: JSON parser builds scene graph and configures objects.
 - **Testing**: JUnit validates geometry intersections, lighting, and full renders.
 
@@ -118,7 +149,6 @@ new Camera("custom_scene", 800,600)
 - 🔲 Soft shadows
 - 🔲 Texture mapping
 - 🔲 Multi-threaded rendering
-- 🔲 GPU acceleration (CUDA / OpenCL)
 
 ---
 
@@ -131,12 +161,7 @@ new Camera("custom_scene", 800,600)
 
 ---
 
-## 📄 License
-
-MIT License © 2025
-
----
-
 ## ✍️ Authors
-- Maor Noy (maornoy1310@gmail.com)
-- Yehonatan Yeret (yeretyn@gmail.com)
+
+- ##### Maor Noy (maornoy1310@gmail.com)
+- ##### Yehonatan Yeret (yeretyn@gmail.com)
