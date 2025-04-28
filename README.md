@@ -21,16 +21,16 @@ with focus on efficiency and performance (Multi-threading support and more math 
 
 ## ⚙️ Installation & Setup
 
-1. **Prerequisites**: Java 11 or higher, Gradle (optional).
+1. **Prerequisites**: Java 11 or higher, Maven
 2. Clone the repo:
    ```sh
-   git clone https://github.com/youruser/JavaRayTracer.git
-   cd JavaRayTracer
+   git clone https://github.com/YehonatanYeret/ISE5784_1420_8200.git
+   cd unittests
    ```
 3. Build & run tests:
    ```sh
-   ./gradlew clean build   # runs compilation and all unit tests
-   ```
+    mvn clean install
+    ```
 
 ---
 
@@ -133,7 +133,7 @@ photographic effects.
 - **Geometries**: define shapes implementing `Intersectable`.
 - **Lighting**: light sources calculate illumination via Phong model.
 - **Renderer**: `Camera` casts rays, constructs `RayTracerBase` pipeline.
-- **Multi-threading**: configure via `Camera.Builder.setMultithreading(int)` (e.g. `-2` for auto, `0` for single-thread,
+- **Multi-threading**: configure via `Camera.Builder.setMultithreading(int)` (e.g. `-1` for auto, `0` for single-thread,
   `N` for fixed threads). Parallelizes pixel casting across cores to reduce render times on multi-core CPUs.
 - **Scene**: JSON parser builds scene graph and configures objects.
 - **Testing**: JUnit validates geometry intersections, lighting, and full renders.
