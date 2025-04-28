@@ -38,7 +38,7 @@ public class MINIPTest {
                     .setLocation(new Point(0, -350, 45))//Point(0, 130, 30)
                     .setVpDistance(500)
                     .setVpSize(150, 150)
-//                    .setMultithreading(3)
+                    .setMultithreading(-1)
                     .build()
                     .renderImage()
                     .writeToImage();
