@@ -166,4 +166,4 @@ photographic effects.
 ## ✍️ Authors
 
 - ##### Maor Noy (maornoy1310@gmail.com)
-- ##### Yehonatan Yeret (yeretyn@gmail.com)
+- ##### Yehonatan Yeret (github.com/YehonatanYeret)
