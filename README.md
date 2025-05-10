@@ -1,5 +1,4 @@
 # Java 3D Ray Tracer
-
 ###### Yehonatan Yeret && Maor Noy
 
 ![Banner](images/advanced_depth.png)
@@ -165,5 +164,5 @@ photographic effects.
 
 ## ✍️ Authors
 
-- ##### Maor Noy (maornoy1310@gmail.com)
+- ##### Maor Noy (github.com/maor-noy)
 - ##### Yehonatan Yeret (github.com/YehonatanYeret)
