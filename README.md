@@ -1,5 +1,7 @@
 # Java 3D Ray Tracer
 
+### Yehonatan Yeret && Maor Noy
+
 ![Banner](images/advanced_depth.png)
 
 A powerful yet easy-to-use Java ray tracing engine. Build stunning 3D scenes using JSON, play with lights and materials,
