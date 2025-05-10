@@ -1,6 +1,6 @@
 # Java 3D Ray Tracer
 
-### Yehonatan Yeret && Maor Noy
+###### Yehonatan Yeret && Maor Noy
 
 ![Banner](images/advanced_depth.png)
 
