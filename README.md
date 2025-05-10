@@ -1,6 +1,6 @@
 # Java 3D Ray Tracer
-###### Yehonatan Yeret && Maor Noy
----
+###### [Yehonatan Yeret](https://github.com/YehonatanYeret) && [Maor Noy](https://github.com/maor-noy)
+
 
 ![Banner](images/advanced_depth.png)
 
