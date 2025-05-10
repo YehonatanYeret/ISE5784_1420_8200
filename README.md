@@ -165,5 +165,5 @@ photographic effects.
 
 ## ✍️ Authors
 
-- ##### Maor Noy (github.com/maor-noy)
-- ##### [Yehonatan Yeret] (github.com/YehonatanYeret)
+- ##### [Maor Noy](https://github.com/maor-noy)
+- ##### [Yehonatan Yeret](https://github.com/YehonatanYeret)
